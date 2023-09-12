@@ -1,3 +1,10 @@
+I am learning how to add motion graphic（real time render） base on it
+
+graphic like : 
+https://playground.anychart.com/docs/samples/CRUD_01
+https://www.chartjs.org/docs/latest/charts/line.html
+
+
 # pingtest
 
 Browser-based UDP ping, using Janus Gateway. Displays ping, jitter and packet
