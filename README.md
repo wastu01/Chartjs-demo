@@ -8,7 +8,8 @@ https://www.chartjs.org/docs/latest/charts/line.html
 Learning Source : 
 
 https://ithelp.ithome.com.tw/articles/10198687
-
+http://ccsig.blogspot.com/2019/01/chartjs.html
+https://alicialin2020.medium.com/chart-js-%E8%87%AA%E5%AD%B8%E5%88%86%E4%BA%AB-243e11851a47
 
 # pingtest
 
