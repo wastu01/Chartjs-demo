@@ -1,13 +1,9 @@
----
-
 I am just beginning to learn JavaScript Canva.
 learning how to add motion graphic（real time render） base on it.
 
 graphic like : 
 https://playground.anychart.com/docs/samples/CRUD_01
 https://www.chartjs.org/docs/latest/charts/line.html
-
----
 
 Learning Source : 
 
