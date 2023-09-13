@@ -58,11 +58,11 @@ var textroom = null;
 var hovering = false;
 var last_hover_time = 0;
 var ping_to = null;
-var ping_interval = 200;
+var ping_interval = 800;
 var pings_sent = 0;
 var pings_received = 0;
-var opaqueId = "pingtest-"+Janus.randomString(12);
-var NUM_MOVING_AVERAGE = 15;
+var opaqueId = "pingtest-"+Janus.randomString(12); // 亂數生成 text
+var NUM_MOVING_AVERAGE = 15; //多少後開始畫圖
 
 var EXCELLENT_JITTER = 50;
 var GOOD_JITTER = 100;
@@ -79,8 +79,10 @@ $(document).ready(function() {
 
     $('#meter').on('mouseover', function() 
     {
+        //圖片顯示區
         hovering = true;
         last_hover_time = performance.now();
+        //console.log(last_hover_time);
     });
 
     $('#meter').on('mouseout', function() 
@@ -90,6 +92,8 @@ $(document).ready(function() {
     if ($('#meter').length > 0)
     {
         meter = $('#meter')[0].getContext('2d');
+        //canvas
+        
     }
 
     start_janus();
@@ -108,6 +112,7 @@ function start_janus()
 
 function start_pings()
 {
+    //刪除點擊功能事件
     $(this).attr('disabled', true).unbind('click');
     // Make sure the browser supports WebRTC
     if(!Janus.isWebrtcSupported()) {
@@ -191,6 +196,7 @@ function start_pings()
                     if(what === "message") {
                         var msg = json["text"];
                         received_ping(msg);
+                        //獲得 text
 
                     } else if(what === "destroyed") {
                             if(json["room"] !== myroom)
@@ -243,7 +249,7 @@ function received_ping(msg)
     $('#chatroom').append("<p>Sent: "+pings_sent);
     $('#chatroom').append("<p>Received: "+pings_received);
     var packet_loss = (pings_sent-pings_received)/pings_sent*100;
-    $('#pings_sent').html(pings_sent);
+    $('#pings_sent').html(pings_sent); //發出多少封包
     $('#average_ping_time').html(avg.toFixed(0));
     $('#pings_received').html(pings_received);
     $('#packet_loss').html(packet_loss.toFixed(0));
@@ -324,6 +330,17 @@ function calc_moving_average()
 
         if (meter)
         {
+
+
+
+
+
+
+
+
+
+
+            
             var m = $('#meter')[0];
             var w = m.width;
             var h = m.height;
@@ -406,6 +423,7 @@ function reply_create(msg)
 }
 
 function setup_ping()
+//開始 ping
 {
     $('#start').removeAttr('disabled').html("Stop").unbind('click')
         .click(function() {
