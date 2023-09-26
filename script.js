@@ -1,7 +1,7 @@
 // Just leraning how to add motion graphic base on it
 
 
-const labels = ["time", "2", "3", "Green", "Purple", "Orange"];
+const labels = ["time", "1", "2", "3", "4", "5"];
 
 console.log(typeof labels);
 
