@@ -1,7 +1,4 @@
-Demo Html : https://wastu01.github.io/
-
-I am just beginning to learn JavaScript Canva.
-learning how to add motion graphic（real time render） base on it.
+learning how to add motion graphic（real time render） base on it (Pingtest).
 
 graphic like : 
 https://playground.anychart.com/docs/samples/CRUD_01
