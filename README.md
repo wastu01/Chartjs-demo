@@ -1,3 +1,6 @@
+Chartjs 動態圖表串接實作構思 (未完成)
+https://wastu01.github.io/Chartjs-demo
+
 learning how to add motion graphic（real time render） base on it (Pingtest).
 
 graphic like : 
