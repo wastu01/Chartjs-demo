@@ -1,6 +1,10 @@
 Chartjs 動態圖表串接實作構思 (未完成)
 https://wastu01.github.io/Chartjs-demo
 
+待解決：ping_got 跟 ping received 差異
+
+need to fixed : what is different ping_got ＆ ping received ?
+
 learning how to add motion graphic（real time render） base on it (Pingtest).
 
 graphic like : 
