@@ -1,7 +1,12 @@
 Chartjs 動態圖表串接實作構思 (未完成)
 https://wastu01.github.io/Chartjs-demo
 
-待解決：ping_got 跟 ping received 差異
+待解決：
+
+Chartjs add data 是如何達成的？ action ?
+https://www.chartjs.org/docs/latest/samples/line/line.html
+
+ping_got 跟 ping received 差異
 
 need to fixed : what is different ping_got ＆ ping received ?
 
