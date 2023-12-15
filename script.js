@@ -1,6 +1,4 @@
-// Just leraning how to add motion graphic base on it
-
-
+// Just learning how to add motion graphic base on it
 
 const pinglabels = ["0", "1", "2", "3", "4", "5"];
 
@@ -26,6 +24,10 @@ var mychart = new Chart(ctx, {
         }]  
     },
     options: {
+        title: {
+            display: true,
+            text: 'Ping-test-Chart'
+        },
         responsive: true,
         layout: {
             padding: 1
@@ -56,3 +58,5 @@ document.getElementById('addDataButton').addEventListener('click', function() {
     addData(mychart, "5", [1.1]); 
 
 });
+
+mychart.canvas.parentNode.style.height = '500px';
