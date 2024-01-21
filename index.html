@@ -52,26 +52,26 @@
 			<div class="row pt-2">
 				<div class="col-md-4">
 					<div class="row">
-						<div class="col-md-12 alert-warning">
+						<div class="col-md-12 alert-warning pt-2">
 						<h2>封包傳遞數量</h2>
 						<h3>Pings sent: <span id="pings_sent">10</span></h3>
 						<h3>Pings received: <span id="pings_received">10</span></h3>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-12 alert-info">
+						<div class="col-md-12 alert-info pt-2">
 						<h2>封包遺失比率</h2>
 						<h3>Packet loss: <span id="packet_loss">1</span>%</h3>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-12 alert-success">
+						<div class="col-md-12 alert-success pt-2">
 						<h3>平均延遲時間</h3>
-						<p>Average ping time: <span id="average_ping_time">3</span>ms</p>
+						<h3>Average ping time: <span id="average_ping_time">3</span>ms</h3>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-12 alert-danger">
+						<div class="col-md-12 alert-danger pt-2">
 						<h2>平均抖動時間</h2>
 						<h3>Average jitter: <span id="average_jitter">2</span>ms</h3>
 						</div>
@@ -80,19 +80,30 @@
 				<div class="col-md-8">
 					
 					<!-- <h2>圖表</h2> -->
-					<div class="chart-container" style="position: relative; height:35vh; width:100vw">
+					<div class="chart-container" style="position: relative; height:30vh; width:100vw">
 						<canvas id="myChart" width="" height="" aria-label="Chart" role="img">
 						  <p>Your browser does not support the canvas element.</p>
 				
 						</canvas>
 					</div>
+					<div class="pt-3">
+						<div class="">
+							<h2 class="d-inline">網路品質狀態：</h2>
+							<button class="btn btn-outline-danger">紅燈</button>
+							<button class="btn btn-outline-warning">黃燈</button>
+							<button class="btn btn-success">綠燈</button>
+						</div>    
+
+					</div>
 				</div>
 
-				<!-- <img alt="Chart Preview" src="https://fakeimg.pl/350x150/BEFFC7,128/000,255?retina=1&text=圖表顯示處&font=noto"> -->
-				<!-- <button class="btn" id="addDataButton" >點我增加資料</button> -->
+				<!-- <img alt="Chart Preview" src="https://fakeimg.pl/350x150/BEFFC7,128/000,255?retina=1&text=圖表顯示處&font=noto">
+				<button class="btn" id="addDataButton" >點我增加資料</button> -->
 
 			</div>
 		</div>
+	</div>
+	<div class="footer">
 	</div>
 </div>
 
