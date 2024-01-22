@@ -42,11 +42,16 @@
 // in the presented order. The first working server will be used for
 // the whole session.
 //
-var server = null;
+//var server = null;
+var server = "/janus";
 if(window.location.protocol === 'http:')
         server = "http://" + window.location.hostname + ":8088/janus";
 else
         server = "https://" + window.location.hostname + ":8089/janus";
+
+server="http://211.73.81.36:8088/janus";
+
+console.log(server);
 
 var janus = null;
 var ping_times = {};
@@ -330,17 +335,6 @@ function calc_moving_average()
 
         if (meter)
         {
-
-
-
-
-
-
-
-
-
-
-            
             var m = $('#meter')[0];
             var w = m.width;
             var h = m.height;
