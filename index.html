@@ -1,119 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Browser based WebRTC Ping Test</title>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.0.3/adapter.min.js" ></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js" ></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.1.0/bootbox.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+<!-- <script type="text/javascript" src="./js/janus.js" ></script> -->
+<script type="text/javascript" src="./js/pingtest.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cerulean/bootstrap.min.css" type="text/css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css" type="text/css"/>
+</head>
+<body>
 
-    <title>Ping-test-ChartJS</title>
+<nav class="navbar navbar-default navbar-static-top">
+</nav>
 
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-	<link href="css/custome.css" rel="stylesheet">
-	<!-- <script type="text/javascript" src="janus.js" ></script> -->
-	<!-- <script type="text/javascript" src="pingtest.js"></script> -->
-
-  </head>
-  <body>
-
-    <div class="container">
+<div class="container">
 	<div class="row">
 		<div class="col-md-12">
-			<div class="row">
-				<div class="col-12">
-				<div><h1>Ping-test</h1></div>
-				</div>
-
-				<div class="col-md-4">
-					 
-					<button type="button" class="btn btn-success btn-lg btn-block">
-						<a href=""><img alt="Bootstrap Image Preview" src="https://fakeimg.pl/80x80/?retina=1&text=TPerf&font=noto" class="rounded-circle"></a>
-						
-					</button>
-				</div>
-				<div class="col-md-8">
-					<h1>
-						文字說明
-					</h1>
-					<p class="h4">
-						單擊“開始”測試我們伺服器的網際網路連線品質。 讓測試執行幾分鐘，以獲得最準確的結果。
-
-						理想情況下，您應該看到250毫秒以下的ping時間和50毫秒以下的抖動，以及零封包丟失。
-
-						請注意，我們使用Janus 伺服器，它可能會有自己的延遲和抖動。
-
-					</p>
-
-				</div>
+			<div class="page-header">
+				<h1>Ping Test
+					<button class="btn btn-default" autocomplete="off" id="start">Start</button>
+				</h1>
 			</div>
-			<div class="row pt-2">
-				<div class="col-md-4">
-					<div class="row">
-						<div class="col-md-12 alert-warning pt-2">
-						<h2>封包傳遞數量</h2>
-						<h3>Pings sent: <span id="pings_sent">10</span></h3>
-						<h3>Pings received: <span id="pings_received">10</span></h3>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12 alert-info pt-2">
-						<h2>封包遺失比率</h2>
-						<h3>Packet loss: <span id="packet_loss">1</span>%</h3>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12 alert-success pt-2">
-						<h3>平均延遲時間</h3>
-						<h3>Average ping time: <span id="average_ping_time">3</span>ms</h3>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12 alert-danger pt-2">
-						<h2>平均抖動時間</h2>
-						<h3>Average jitter: <span id="average_jitter">2</span>ms</h3>
+			<div class="container" id="details">
+                        <p>Click Start to test the quality of the internet
+                        connection to our server. Leave the test running
+                        for a few minutes for the most accurate results.</p>
+                        <p>Ideally you should see ping times under 250ms and
+                        jitter under 50ms, and zero packet loss.</p>
+                        <p>Note that we use <a href="https://github.com/meetecho/janus-gateway">Janus Gateway</a>, which may introduce its own latency and jitter.</p>
+                        <p>Troubleshooting tips:
+                        <ul>
+                        <li> If using wifi, try moving closer to your wifi router
+                        <li> Make sure that nobody is downloading or uploading large files, or watching movies using the internet connection
+                        <li> Try disabling and enabling wifi on your computer
+                        <li> Try turning your router off and on again
+                        <li> Try rebooting your computer
+                        <li> For users in China or UAE we recommend using a VPN for best performance
+			</div>
+			<div class="container " id="room">
+				<div class="row">
+					<div class="col-md-8">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Ping Results </span></h3>
+							</div>
+							<div class="panel-body relative" id="pingresults">
+                                                        <p>Pings sent: <span id="pings_sent"></span></p>
+                                                        <p>Pings received: <span id="pings_received"></span></p>
+                                                        <p>Average ping time: <span id="average_ping_time"></span>ms</p>
+                                                        <p>Average jitter: <span id="average_jitter"></span>ms</p>
+                                                        <p>Packet loss: <span id="packet_loss"></span>%</p>
+                                                        <canvas id="meter" width=150 height=150 style="position:absolute; top: 15px; right: 15px">
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-md-8">
-					
-					<!-- <h2>圖表</h2> -->
-					<div class="chart-container">
-						<canvas id="myChart" width="" height="" aria-label="Chart" role="img">
-						  <p>Your browser does not support the canvas element.</p>
-				
-						</canvas>
-					</div>
-					<div class="pt-3">
-						<div class="">
-							<h2 class="d-inline">網路品質狀態：</h2>
-							<button class="btn btn-outline-danger">紅燈</button>
-							<button class="btn btn-outline-warning">黃燈</button>
-							<button class="btn btn-success">綠燈</button>
-						</div>    
-
-					</div>
-					<button class="btn" id="addDataButton" >點我增加資料</button>
-				</div>
-
-				<!-- <img alt="Chart Preview" src="https://fakeimg.pl/350x150/BEFFC7,128/000,255?retina=1&text=圖表顯示處&font=noto"> -->
-
-
 			</div>
 		</div>
 	</div>
+
+	<hr>
 	<div class="footer">
 	</div>
 </div>
 
-    <!-- <script src="js/jquery.min.js"></script> -->
-    <!-- <script src="js/bootstrap.min.js"></script> -->
-    <!-- <script src="js/scripts.js"></script> -->
-	<!-- Chart.js v4.4.1 -->
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script src="js/chart.js"></script>
-	
-  </body>
+</body>
 </html>
