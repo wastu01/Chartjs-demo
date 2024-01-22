@@ -1,7 +1,9 @@
-// Just leraning how to add motion graphic base on it
+// Just learning how to add motion graphic base on it
 
 Chart.defaults.font.size = 20;
 Chart.defaults.elements.line.borderWidth = 5;
+
+// mychart.canvas.parentNode.style.height = '500px';
 
 // grid configuration
 
@@ -13,7 +15,7 @@ const TICKS = true;
 
 // fake dataset
 
-const labels = ["time", "1", "2", "3", "4", "5"];
+const labels = ["0", "1", "2", "3", "4", "5"];
 
 console.log(typeof labels);
 
@@ -31,7 +33,7 @@ var chart = new Chart(ctx, {
             label: 'Ping Time',
             data: datas,
             backgroundColor: '#fffcf5',
-            borderColor: '#f3f1f8',
+            borderColor: '#27ae60',
             borderWidth: 4,
 
         }]
@@ -49,7 +51,7 @@ var chart = new Chart(ctx, {
         scales: {
             x: {
                 ticks: {
-                    color: 'white',
+                    color: 'black',
                 },
                 grid: {
                     display: DISPLAY,
@@ -68,7 +70,7 @@ var chart = new Chart(ctx, {
             y: {
                 beginAtZero: true,
                 ticks: {
-                    color: 'white',
+                    color: 'black',
                     // 其他 Y 軸設定...
                 },
                 grid:{
