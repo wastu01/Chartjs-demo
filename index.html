@@ -34,8 +34,10 @@
 
           </canvas>
         </div>
-        <button class="btn" id="addDataButton">點我增加資料</button>
-        <button class="btn" id="popDataButton">點我刪除資料</button>
+        <button class="btn" id="addDataButton">點我增加末項資料</button>
+        <button class="btn" id="popDataButton">點我刪除末項資料</button>
+        <button class="btn" id="shiftDataButton">點我增加首項資料</button>
+
       </div>
 
 
@@ -48,7 +50,8 @@
             rel="noopener noreferrer" class="link-primary">學習筆記</a></p>
       </div>
       <div class="col-4">
-        <p><a href="https://www.groupworld.net/pingtest.html" target="_blank" rel="noopener noreferrer">1. ping-test </a>
+        <p><a href="https://www.groupworld.net/pingtest.html" target="_blank" rel="noopener noreferrer">1. ping-test
+          </a>
         </p>
 
       </div>
@@ -76,9 +79,7 @@
     const dataValue = [1, 2, 3, 4, 5, 7];
     const labels = ["0", "1", "2", "3", "4", "5"];
 
-
-    labels.pop();
-    dataValue.pop();
+    //labels.shift();
 
     //參數設定區塊
 
@@ -97,7 +98,7 @@
       data: data,
       options: {
         scales: {
-          x:{
+          x: {
             grid: {
               display: false,
             }
@@ -120,49 +121,81 @@
 
     //資料更新區塊
 
+
+    //增加資料
+
     function addData(myChart, label, newData) {
       myChart.data.labels.push(label);
+
       myChart.data.datasets.forEach((dataset) => {
         dataset.data.push(newData);
+
       });
       myChart.update();
     }
-
 
     document.getElementById('addDataButton').addEventListener('click', function () {
       const currentSeconds = getCurrentSeconds(); // 從 time.js 獲取秒數
-      addData(myChart, currentSeconds, "8");
+      addData(myChart, currentSeconds, getRandomValue());
 
     });
 
-    function popData(myChart, label, newData) {
-      myChart.data.labels.pop(label);
+
+    //刪除資料
+
+    function popData(myChart) {
+      myChart.data.labels.pop();
       myChart.data.datasets.forEach((dataset) => {
-        dataset.data.pop(newData);
+        dataset.data.pop();
       });
-      //myChart.data.datasets
       myChart.update();
     }
 
-
     document.getElementById('popDataButton').addEventListener('click', function () {
-      popData(myChart, "PingTime", "8");
+      popData(myChart);
 
     });
 
-    function timeCount(){
+
+    //首項增加預設資料
+
+    function unshiftValue(myChart) {
+
+      labels.unshift('初始值');
+      dataValue.unshift('0.2');
+      myChart.update();
+
 
     }
-    var clock = setTimeout(TimeOut , 200);
-    function TimeOut(){
-      console.log("1timeout");
+
+    document.getElementById('shiftDataButton').addEventListener('click', function () {
+      unshiftValue(myChart);
+    });
+
+
+    // 模擬假資料
+
+    function getRandomValue() {
+      return Math.floor(Math.random() * 10);
     }
-    var clock = setInterval(Timer , 1000);
-    function Timer(){
+
+    var clock = setTimeout(TimeOut, 200);
+    function TimeOut() {
+      console.log("1time-out");
+      const currentSeconds = getCurrentSeconds();
+      addData(myChart, currentSeconds, getRandomValue());
+
+    }
+
+    //var clock = setInterval(Timer , 1000);
+
+    function Timer() {
       console.log("Keep counting");
-      const currentSeconds = getCurrentSeconds(); // 從 time.js 獲取秒數
-      addData(myChart, currentSeconds, "8");
+      const currentSeconds = getCurrentSeconds();
+      addData(myChart, currentSeconds, getRandomValue());
+
     }
+
 
 
   </script>
