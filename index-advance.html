@@ -10,8 +10,14 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link href="css/bootstrap.css" rel="stylesheet">
-	<link href="css/custome.css" rel="stylesheet">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.0.3/adapter.min.js" ></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js" ></script>
+	<script type="text/javascript" src="./js/bootstrap.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.1.0/bootbox.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+    <link href="./css/bootstrap.css" rel="stylesheet">
+	<link href="./css/custome.css" rel="stylesheet">
 	<!-- <script type="text/javascript" src="janus.js" ></script> -->
 	<!-- <script type="text/javascript" src="pingtest.js"></script> -->
 
@@ -26,14 +32,7 @@
 				<div><h1>Ping-test</h1></div>
 				</div>
 
-				<div class="col-md-4">
-					 
-					<button type="button" class="btn btn-success btn-lg btn-block">
-						<a href=""><img alt="Bootstrap Image Preview" src="https://fakeimg.pl/80x80/?retina=1&text=TPerf&font=noto" class="rounded-circle"></a>
-						
-					</button>
-				</div>
-				<div class="col-md-8">
+				<div class="col-12">
 					<h1>
 						文字說明
 					</h1>
@@ -47,6 +46,7 @@
 					</p>
 
 				</div>
+				<button class="btn" id="addDataButton" >點我增加資料</button>
 			</div>
 			<div class="row pt-2">
 				<div class="col-md-4">
@@ -77,15 +77,22 @@
 					</div>
 				</div>
 				<div class="col-md-8">
+					<div class="col">
+					 
+						<button type="button" class="btn btn-success btn-lg btn-block" id="start">
+							<a href=""><img alt="Bootstrap Image Preview" src="https://fakeimg.pl/80x80/?retina=1&text=TPerf&font=noto" class="rounded-circle"></a>
+							
+						</button>
+					</div>
 					
 					<!-- <h2>圖表</h2> -->
-					<div class="chart-container">
+					<div class="col chart-container">
 						<canvas id="myChart" width="" height="" aria-label="Chart" role="img">
 						  <p>Your browser does not support the canvas element.</p>
 				
 						</canvas>
 					</div>
-					<div class="pt-3">
+					<div class="col pt-3">
 						<div class="">
 							<h2 class="d-inline">網路品質狀態：</h2>
 							<button class="btn btn-outline-danger">紅燈</button>
@@ -94,7 +101,7 @@
 						</div>    
 
 					</div>
-					<button class="btn" id="addDataButton" >點我增加資料</button>
+					
 				</div>
 
 				<!-- <img alt="Chart Preview" src="https://fakeimg.pl/350x150/BEFFC7,128/000,255?retina=1&text=圖表顯示處&font=noto"> -->

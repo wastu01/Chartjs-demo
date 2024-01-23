@@ -8,9 +8,16 @@
 
   <title>網頁視覺化圖表-折線圖</title>
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="./css/bootstrap.css" type="text/css"/>
+  <link rel="stylesheet" href="./css/bootstrap.css" type="text/css" />
   <!-- Costume CSS -->
   <link rel="stylesheet" href="./css/custome.css">
+  <style>
+    .chart-container {
+      position: relative;
+      height: 60vh;
+      padding: 2rem;
+    }
+  </style>
 
 </head>
 
@@ -19,8 +26,8 @@
 
     <div class="row">
       <div class="col-12">
-        <h1>Pingtest-ChartJS</h1>
-        <div class="chart-container" style="position: relative; height:70vh; width:80vw">
+        <h1>Ping-test-ChartJS</h1>
+        <div class="chart-container">
           <canvas id="myChart" width="" height="" aria-label="Chart" role="img">
             <p>Your browser does not support the canvas element.</p>
 
@@ -39,7 +46,7 @@
             rel="noopener noreferrer" class="link-primary">學習筆記</a></p>
       </div>
       <div class="col-4">
-        <p><a href="https://www.groupworld.net/pingtest.html" target="_blank" rel="noopener noreferrer">1. pingtest </a>
+        <p><a href="https://www.groupworld.net/pingtest.html" target="_blank" rel="noopener noreferrer">1. ping-test </a>
         </p>
 
       </div>
@@ -57,22 +64,20 @@
 
   <script>
 
+    // 樣式定義區塊
+
+    const backgroundColor = ['#45f4f7'];
+    const borderColor = ['#00bfaf'];
+
     // 資料定義區塊
-    const dataValue = [0, 10, 5, 2, 20, 30, 45];
-    const labels = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-    ];
+    const dataValue = [1, 2, 4, 3, 5, 4, 5];
+    const labels = ["0", "1", "2", "3", "4", "5"];
     const data = {
       labels: labels,
       datasets: [{
-        label: 'My First dataset',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
+        label: '網路品質動態圖表',
+        backgroundColor: backgroundColor,
+        borderColor: borderColor,
         data: dataValue,
       }]
     };
@@ -82,19 +87,44 @@
     const config = {
       type: 'line',
       data: data,
+      options: {
+        scales: {
+          x:{
+            grid: {
+              display: false,
+            }
+          },
+          y: {
+            beginAtZero: true,
+            min: 0,     // 設定 y 軸的最小值
+            max: 10    // 設定 y 軸的最大值
+          }
+        }
+      }
     };
 
 
     //渲染圖表區塊
 
-    var myChart = new Chart(
-      document.getElementById('myChart'),
-      config
-    );
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    var myChart = new Chart(ctx, config);
+
+    //資料更新區塊
+
+    function addData(myChart, label, newData) {
+      myChart.data.labels.push(label);
+      myChart.data.datasets.forEach((dataset) => {
+        dataset.data.push(newData);
+      });
+      myChart.update();
+    }
 
 
+    document.getElementById('addDataButton').addEventListener('click', function () {
+      addData(myChart, "5", [3.1]);
 
-
+    });
 
   </script>
 

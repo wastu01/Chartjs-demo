@@ -3,7 +3,6 @@
 Chart.defaults.font.size = 20;
 Chart.defaults.elements.line.borderWidth = 5;
 
-// mychart.canvas.parentNode.style.height = '500px';
 
 // grid configuration
 
