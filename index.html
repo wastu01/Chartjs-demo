@@ -1,84 +1,172 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Ping Test Web Version</title>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.0.3/adapter.min.js" ></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js" ></script>
-<script type="text/javascript" src="./js/bootstrap.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.1.0/bootbox.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
-<!-- <script type="text/javascript" src="./js/janus.js" ></script> -->
-<script type="text/javascript" src="./js/pingtest.js"></script>
-<link rel="stylesheet" href="./css/bootstrap.css" type="text/css"/>
-<script src="https://kit.fontawesome.com/7c505e26a3.js" crossorigin="anonymous"></script>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>網頁視覺化圖表-折線圖</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="./css/bootstrap.css" type="text/css" />
+  <!-- Costume CSS -->
+  <link rel="stylesheet" href="./css/custome.css">
+  <style>
+    .chart-container {
+      position: relative;
+      height: 60vh;
+      width: 90vw;
+      padding: 2rem;
+    }
+  </style>
+
 </head>
+
 <body>
+  <div class="container">
 
-<nav class="navbar navbar-default navbar-static-top">
-</nav>
+    <div class="row">
+      <div class="col-12">
+        <h1>Ping-test-ChartJS</h1>
+        <div class="chart-container">
+          <canvas id="myChart" width="" height="" aria-label="Chart" role="img">
+            <p>Your browser does not support the canvas element.</p>
 
-<div class="container">
-	<div class="row">
-		<div class="col-md-12">
-			<div class="page-header">
-				<h1>網路品質測試</h1>
-				<!-- <button>中英文翻譯</button> -->
-			</div>
-			<div class="container" id="details">
-						<p class="h4">文字說明</p> 
-                        <p class="h4">Click Start to test the quality of the internet
-                        connection to our server. Leave the test running
-                        for a few minutes for the most accurate results.</p>
-                        <p>Ideally you should see ping times under 250ms and
-                        jitter under 50ms, and zero packet loss.</p>
-                        <p>Note that we use <a href="https://github.com/meetecho/janus-gateway">Janus Gateway</a>, which may introduce its own latency and jitter.</p>
-                        <p>Troubleshooting tips:
-                        <ul>
-                        <li> If using wifi, try moving closer to your wifi router
-                        <li> Make sure that nobody is downloading or uploading large files, or watching movies using the internet connection
-                        <li> Try disabling and enabling wifi on your computer
-                        <li> Try turning your router off and on again
-                        <li> Try rebooting your computer
-                        <li> For users in China or UAE we recommend using a VPN for best performance
-			</div>
-			<div class="container " id="room">
-				<div class="row">
-					<div class="col-md-4">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h3 class="panel-title">Ping Results </span></h3>
-							</div>
-							<div class="panel-body relative" id="pingresults">
-                                                        <p>Pings sent: <span id="pings_sent"></span></p>
-                                                        <p>Pings received: <span id="pings_received"></span></p>
-                                                        <p>Average ping time: <span id="average_ping_time"></span>ms</p>
-                                                        <p>Average jitter: <span id="average_jitter"></span>ms</p>
-                                                        <p>Packet loss: <span id="packet_loss"></span>%</p>
-                                                        <canvas id="meter" width=150 height=150 style="position:absolute; top: 15px; right: 15px">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-8">
-						<div>
-							
-						</div>
-						<button type="button" class="btn btn-primary" autocomplete="off" id="start">Start</button>
-						<img src="https://fakeimg.pl/350x200/?text=FakeChart">
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+          </canvas>
+        </div>
+        <button class="btn" id="addDataButton">點我增加資料</button>
+        <button class="btn" id="popDataButton">點我刪除資料</button>
+      </div>
 
-	<hr>
-	<div class="footer">
-		<p>原始專案：<a href="https://github.com/groupboard/pingtest" target="_blank" rel="noopener noreferrer">https://github.com/groupboard/pingtest</a></p>
-	</div>
-</div>
+
+    </div>
+    <br>
+    <div class="row">
+
+      <div class="col-4">
+        <p><a href="https://hackmd.io/@DCT/Chartjs-web-visualization-learning-note" target="_blank"
+            rel="noopener noreferrer" class="link-primary">學習筆記</a></p>
+      </div>
+      <div class="col-4">
+        <p><a href="https://www.groupworld.net/pingtest.html" target="_blank" rel="noopener noreferrer">1. ping-test </a>
+        </p>
+
+      </div>
+      <div class="col-4">
+        <p><a href="https://www.chartjs.org/docs/latest/getting-started/" target="_blank" rel="noopener noreferrer">2.
+            chart.js </a></p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="./js/time.js"></script>
+
+  <script>
+
+    // 樣式定義區塊
+
+    const backgroundColor = ['#45f4f7'];
+    const borderColor = ['#00bfaf'];
+
+    // 資料定義區塊
+    const dataValue = [1, 2, 3, 4, 5, 7];
+    const labels = ["0", "1", "2", "3", "4", "5"];
+
+
+    labels.pop();
+    dataValue.pop();
+
+    //參數設定區塊
+
+    const data = {
+      labels: labels,
+      datasets: [{
+        label: '網路品質動態圖表',
+        backgroundColor: backgroundColor,
+        borderColor: borderColor,
+        data: dataValue,
+      }]
+    };
+
+    const config = {
+      type: 'line',
+      data: data,
+      options: {
+        scales: {
+          x:{
+            grid: {
+              display: false,
+            }
+          },
+          y: {
+            beginAtZero: true,
+            min: 0,     // 設定 y 軸的最小值
+            max: 10,    // 設定 y 軸的最大值
+          },
+        }
+      }
+    };
+
+
+    //渲染圖表區塊
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    var myChart = new Chart(ctx, config);
+
+    //資料更新區塊
+
+    function addData(myChart, label, newData) {
+      myChart.data.labels.push(label);
+      myChart.data.datasets.forEach((dataset) => {
+        dataset.data.push(newData);
+      });
+      myChart.update();
+    }
+
+
+    document.getElementById('addDataButton').addEventListener('click', function () {
+      const currentSeconds = getCurrentSeconds(); // 從 time.js 獲取秒數
+      addData(myChart, currentSeconds, "8");
+
+    });
+
+    function popData(myChart, label, newData) {
+      myChart.data.labels.pop(label);
+      myChart.data.datasets.forEach((dataset) => {
+        dataset.data.pop(newData);
+      });
+      //myChart.data.datasets
+      myChart.update();
+    }
+
+
+    document.getElementById('popDataButton').addEventListener('click', function () {
+      popData(myChart, "PingTime", "8");
+
+    });
+
+    function timeCount(){
+
+    }
+    var clock = setTimeout(TimeOut , 200);
+    function TimeOut(){
+      console.log("1timeout");
+    }
+    var clock = setInterval(Timer , 1000);
+    function Timer(){
+      console.log("Keep counting");
+      const currentSeconds = getCurrentSeconds(); // 從 time.js 獲取秒數
+      addData(myChart, currentSeconds, "8");
+    }
+
+
+  </script>
 
 </body>
+
 </html>

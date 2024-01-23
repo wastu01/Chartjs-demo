@@ -118,3 +118,17 @@ document.getElementById('addDataButton').addEventListener('click', function () {
     addData(chart, "5", [3.1]);
 
 });
+
+function addData(chart, label, newData) {
+    chart.data.labels.push(label);
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(newData);
+    });
+    chart.update();
+}
+
+
+document.getElementById('popDataButton').addEventListener('click', function () {
+    addData(chart, "5", [3.1]);
+
+});
