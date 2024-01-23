@@ -4,17 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Browser based WebRTC Ping Test</title>
+<title>Ping Test Web Version</title>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.0.3/adapter.min.js" ></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js" ></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.1.0/bootbox.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
 <!-- <script type="text/javascript" src="./js/janus.js" ></script> -->
 <script type="text/javascript" src="./js/pingtest.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cerulean/bootstrap.min.css" type="text/css"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css" type="text/css"/>
+<link rel="stylesheet" href="./css/bootstrap.css" type="text/css"/>
+<script src="https://kit.fontawesome.com/7c505e26a3.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -25,12 +25,12 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="page-header">
-				<h1>Ping Test
-					<button class="btn btn-default" autocomplete="off" id="start">Start</button>
-				</h1>
+				<h1>網路品質測試</h1>
+				<!-- <button>中英文翻譯</button> -->
 			</div>
 			<div class="container" id="details">
-                        <p>Click Start to test the quality of the internet
+						<p class="h4">文字說明</p> 
+                        <p class="h4">Click Start to test the quality of the internet
                         connection to our server. Leave the test running
                         for a few minutes for the most accurate results.</p>
                         <p>Ideally you should see ping times under 250ms and
@@ -47,7 +47,7 @@
 			</div>
 			<div class="container " id="room">
 				<div class="row">
-					<div class="col-md-8">
+					<div class="col-md-4">
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h3 class="panel-title">Ping Results </span></h3>
@@ -61,6 +61,13 @@
                                                         <canvas id="meter" width=150 height=150 style="position:absolute; top: 15px; right: 15px">
 							</div>
 						</div>
+					</div>
+					<div class="col-md-8">
+						<div>
+							
+						</div>
+						<button class="btn btn-default" autocomplete="off" id="start">Start</button>
+						<img src="https://fakeimg.pl/350x200/?text=FakeChart">
 					</div>
 				</div>
 			</div>

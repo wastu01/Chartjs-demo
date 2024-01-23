@@ -111,6 +111,8 @@ function start_janus()
         // Use a button to start the demo
         $('#start').one('click', function() {
             start_pings();
+            //隱藏按鈕
+            //顯示圖表
         });
     }});
 }
