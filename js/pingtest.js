@@ -49,7 +49,7 @@ if(window.location.protocol === 'http:')
 else
         server = "https://" + window.location.hostname + ":8089/janus";
 
-server="http://211.73.81.36:8088/janus";
+server="http://xxxxxx:8088/janus";
 
 console.log(server);
 
@@ -63,7 +63,7 @@ var textroom = null;
 var hovering = false;
 var last_hover_time = 0;
 var ping_to = null;
-var ping_interval = 800;
+var ping_interval = 100;
 var pings_sent = 0;
 var pings_received = 0;
 var opaqueId = "pingtest-"+Janus.randomString(12); // 亂數生成 text
