@@ -36,7 +36,8 @@
         </div>
         <button class="btn" id="addDataButton">點我增加末項資料</button>
         <button class="btn" id="popDataButton">點我刪除末項資料</button>
-        <button class="btn" id="shiftDataButton">點我增加首項資料</button>
+        <button class="btn" id="unshiftDataButton">點我增加首項資料</button>
+        <button class="btn" id="shiftDataButton">點我移除首項資料</button>
 
       </div>
 
@@ -75,9 +76,18 @@
     const backgroundColor = ['#45f4f7'];
     const borderColor = ['#00bfaf'];
 
-    // 資料定義區塊
-    const dataValue = [1, 2, 3, 4, 5, 7];
-    const labels = ["0", "1", "2", "3", "4", "5"];
+
+    // 資料定義區塊 (labels,dataValue) = (x,y)
+    const labels = ['起始', '1筆', '2筆', '3', '4', '5'];
+    const dataValue = [1, 1, 1, 1, 1, 2];
+
+
+    const dataValue2 = [0, 0, 0, 0, 0, 0];
+
+    dataValue2.fill(0);
+    console.log(labels.indexOf(labels[0]));
+    console.log(dataValue[0]);
+
 
     //labels.shift();
 
@@ -89,8 +99,16 @@
         label: '網路品質動態圖表',
         backgroundColor: backgroundColor,
         borderColor: borderColor,
+        borderWidth: 5,
         data: dataValue,
-      }]
+      }, {
+        label: '理想情況',
+        backgroundColor: 'black',
+        borderColor: 'black',
+        borderWidth: 5,
+        data: dataValue2,
+      }
+      ]
     };
 
     const config = {
@@ -101,14 +119,14 @@
           x: {
             grid: {
               display: false,
-            }
+            },
           },
           y: {
             beginAtZero: true,
-            min: 0,     // 設定 y 軸的最小值
-            max: 10,    // 設定 y 軸的最大值
+            //min: 0,     // 設定 y 軸的最小值
+            //max: 10,    // 設定 y 軸的最大值
           },
-        }
+        },
       }
     };
 
@@ -125,13 +143,22 @@
     //增加資料
 
     function addData(myChart, label, newData) {
+
       myChart.data.labels.push(label);
 
       myChart.data.datasets.forEach((dataset) => {
         dataset.data.push(newData);
 
       });
-      myChart.update();
+
+      dataValue2.fill(0);
+
+      shiftValue(myChart);
+
+      //myChart.update();
+      //console.log(myChart.data.labels);
+      let lastIndex = myChart.data.datasets[0].data.length;
+      //console.log("總數量:"+ (lastIndex));
     }
 
     document.getElementById('addDataButton').addEventListener('click', function () {
@@ -162,14 +189,31 @@
     function unshiftValue(myChart) {
 
       labels.unshift('初始值');
-      dataValue.unshift('0.2');
+      dataValue.unshift('9');
+      console.log(labels);
+      myChart.update();
+
+
+    }
+
+    document.getElementById('unshiftDataButton').addEventListener('click', function () {
+      unshiftValue(myChart);
+    });
+
+    //移除首項資料
+
+    function shiftValue(myChart) {
+
+      labels.shift();
+      dataValue.shift();
+      dataValue2.shift();
       myChart.update();
 
 
     }
 
     document.getElementById('shiftDataButton').addEventListener('click', function () {
-      unshiftValue(myChart);
+      shiftValue(myChart);
     });
 
 
@@ -179,15 +223,15 @@
       return Math.floor(Math.random() * 10);
     }
 
-    var clock = setTimeout(TimeOut, 200);
+    var clock = setTimeout(TimeOut, 0);
     function TimeOut() {
-      console.log("1time-out");
+      //console.log("1time-out");
       const currentSeconds = getCurrentSeconds();
       addData(myChart, currentSeconds, getRandomValue());
 
     }
 
-    //var clock = setInterval(Timer , 1000);
+    //var clock = setInterval(Timer , 5000);
 
     function Timer() {
       console.log("Keep counting");
@@ -195,6 +239,31 @@
       addData(myChart, currentSeconds, getRandomValue());
 
     }
+
+
+
+    //重新點擊量測，圖表重置
+
+
+
+
+    //除錯用
+
+    //x軸
+    //console.log(myChart.data.labels);
+
+
+
+    //y軸
+    // 遍歷每個數據集並輸出 Y 軸數據
+    myChart.data.datasets.forEach((dataset, index) => {
+      //console.log(`數據集 ${index + 1} 的 Y 軸數據:`, dataset.data);
+    });
+
+
+
+
+
 
 
 
