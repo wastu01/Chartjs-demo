@@ -77,16 +77,19 @@
     const borderColor = ['#00bfaf'];
 
 
+
     // 資料定義區塊 (labels,dataValue) = (x,y)
-    const labels = ['起始', '1筆', '2筆', '3', '4', '5'];
-    const dataValue = [1, 1, 1, 1, 1, 2];
+    const labels = ['1筆', '2筆', '3筆', '4筆', '5筆', '6'];
+    const dataValue = [0, 1, 2, 3, 4, 2];
+    const defaultValue = 0.9;
+
+    console.log(labels.slice(labels.length - 1));
 
 
     const dataValue2 = [0, 0, 0, 0, 0, 0];
 
-    dataValue2.fill(0);
-    console.log(labels.indexOf(labels[0]));
-    console.log(dataValue[0]);
+    dataValue2.fill(defaultValue);
+
 
 
     //labels.shift();
@@ -96,7 +99,7 @@
     const data = {
       labels: labels,
       datasets: [{
-        label: '網路品質動態圖表',
+        label: 'Ping RTT',
         backgroundColor: backgroundColor,
         borderColor: borderColor,
         borderWidth: 5,
@@ -115,17 +118,49 @@
       type: 'line',
       data: data,
       options: {
+        responsive: true,
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+
         scales: {
           x: {
             grid: {
               display: false,
+              color: 'gray',
+              width: 2,
+
             },
+            ticks: {
+              color:'black'
+            },
+            border: {
+              display: true,
+              dash: [6, 6],
+              color: 'black',
+          }
           },
           y: {
             beginAtZero: true,
             //min: 0,     // 設定 y 軸的最小值
             //max: 10,    // 設定 y 軸的最大值
+            grid:{
+              color: 'gray',
+              width: 2,
+
+            },
+            ticks: {
+              color: 'black',
+              // 其他 Y 軸設定...
+            },
+            border: {
+                dash: [6, 6],
+                color: 'black',
+            },
+
           },
+
         },
       }
     };
@@ -151,14 +186,22 @@
 
       });
 
-      dataValue2.fill(0);
+      dataValue2.fill(defaultValue);
+
+
 
       shiftValue(myChart);
 
-      //myChart.update();
       //console.log(myChart.data.labels);
       let lastIndex = myChart.data.datasets[0].data.length;
-      //console.log("總數量:"+ (lastIndex));
+      console.log("Ｘ軸固定數量:" + (lastIndex));
+
+      myChart.update();
+
+      //console.log("末筆資料："+myChart.data.labels[5]);
+
+      console.log("末筆資料：" + labels.slice(labels.length - 1));
+
     }
 
     document.getElementById('addDataButton').addEventListener('click', function () {
@@ -223,9 +266,11 @@
       return Math.floor(Math.random() * 10);
     }
 
-    var clock = setTimeout(TimeOut, 0);
+    var clock = setTimeout(TimeOut, 1000);
+
     function TimeOut() {
       //console.log("1time-out");
+      console.log(labels.indexOf('1筆'));
       const currentSeconds = getCurrentSeconds();
       addData(myChart, currentSeconds, getRandomValue());
 
@@ -239,6 +284,8 @@
       addData(myChart, currentSeconds, getRandomValue());
 
     }
+
+
 
 
 
