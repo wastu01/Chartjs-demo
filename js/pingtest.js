@@ -44,14 +44,14 @@
 //
 //var server = null;
 var server = "/janus";
-if(window.location.protocol === 'http:')
-        server = "http://" + window.location.hostname + ":8088/janus";
+if (window.location.protocol === 'http:')
+    server = "http://" + window.location.hostname + ":8088/janus";
 else
-        server = "https://" + window.location.hostname + ":8089/janus";
+    server = "https://" + window.location.hostname + ":8089/janus";
 
-server="http://xxxxxx:8088/janus";
+server = "http://211.73.81.36:8088/janus";
 
-console.log(server);
+// console.log(server);
 
 var janus = null;
 var ping_times = {};
@@ -63,10 +63,10 @@ var textroom = null;
 var hovering = false;
 var last_hover_time = 0;
 var ping_to = null;
-var ping_interval = 100;
+var ping_interval = 2000; //打 Ping 頻率
 var pings_sent = 0;
 var pings_received = 0;
-var opaqueId = "pingtest-"+Janus.randomString(12); // 亂數生成 text
+var opaqueId = "pingtest-" + Janus.randomString(12); // 亂數生成 text
 var NUM_MOVING_AVERAGE = 15; //多少後開始畫圖
 
 var EXCELLENT_JITTER = 50;
@@ -80,340 +80,352 @@ var myusername = Janus.randomString(12);
 var myid = Janus.randomString(12);
 var transactions = {}
 
-$(document).ready(function() {
+$(document).ready(function () {
 
-    $('#meter').on('mouseover', function() 
-    {
+    $('#meter').on('mouseover', function () {
         //圖片顯示區
         hovering = true;
         last_hover_time = performance.now();
         //console.log(last_hover_time);
     });
 
-    $('#meter').on('mouseout', function() 
-    {
+    $('#meter').on('mouseout', function () {
         hovering = false;
     });
-    if ($('#meter').length > 0)
-    {
+    if ($('#meter').length > 0) {
         meter = $('#meter')[0].getContext('2d');
         //canvas
-        
+
     }
 
     start_janus();
 });
 
-function start_janus()
-{
+function start_janus() {
     // Initialize the library (all console debuggers enabled)
-    Janus.init({debug: "false", callback: function() {
-        // Use a button to start the demo
-        $('#start').one('click', function() {
-            start_pings();
-            //隱藏按鈕
-            //顯示圖表
-        });
-    }});
+    Janus.init({
+        debug: "false", callback: function () {
+            // Use a button to start the demo
+            $('#start').one('click', function () {
+                start_pings();
+                //隱藏按鈕
+                //顯示圖表
+            });
+        }
+    });
 }
 
-function start_pings()
-{
+function start_pings() {
     //刪除點擊功能事件
     $(this).attr('disabled', true).unbind('click');
     // Make sure the browser supports WebRTC
-    if(!Janus.isWebrtcSupported()) {
+    if (!Janus.isWebrtcSupported()) {
         bootbox.alert("No WebRTC support... ");
         return;
     }
     // Create session
     janus = new Janus(
-    {
-        server: server,
-        success: function() {
-            // Attach to text room plugin
-            janus.attach(
-            {
-                plugin: "janus.plugin.textroom",
-                opaqueId: opaqueId,
-                dataChannelOptions: { ordered: false, maxRetransmits: 0 },
-                success: function(pluginHandle) {
-                    textroom = pluginHandle;
-                    Janus.log("Plugin attached! (" + textroom.getPlugin() + ", id=" + textroom.getId() + ")");
-                    // Setup the DataChannel
-                    var body = { "request": "setup" };
-                    Janus.debug("Sending message (" + JSON.stringify(body) + ")");
-                    textroom.send({"message": body});
-                    setup_ping();
-                },
-                error: function(error) {
-                    console.error("  -- Error attaching plugin...", error);
-                    bootbox.alert("Error attaching plugin... " + error);
-                },
-                webrtcState: function(on) {
-                    Janus.log("Janus says our WebRTC PeerConnection is " + (on ? "up" : "down") + " now");
-                    if ($("#videoleft").length > 0)
+        {
+            server: server,
+            success: function () {
+                // Attach to text room plugin
+                janus.attach(
                     {
-                        $("#videoleft").parent().unblock();
-                    }
-                },
-                onmessage: function(msg, jsep) {
-                    Janus.debug(" ::: Got a message :::");
-                    Janus.debug(msg);
-                    if(msg["error"] !== undefined && msg["error"] !== null) {
-                        bootbox.alert(msg["error"]);
-                    }
-                    if(jsep !== undefined && jsep !== null) {
-                        // Answer
-                        textroom.createAnswer(
-                        {
-                            jsep: jsep,
-                            media: { audio: false, video: false, data: true },	// We only use datachannels
-                            success: function(jsep) {
-                                Janus.debug("Got SDP!");
-                                Janus.debug(jsep);
-                                var body = { "request": "ack" };
-                                textroom.send({"message": body, "jsep": jsep});
-                            },
-                            error: function(error) {
-                                Janus.error("WebRTC error:", error);
-                                bootbox.alert("WebRTC error... " + JSON.stringify(error));
+                        plugin: "janus.plugin.textroom",
+                        opaqueId: opaqueId,
+                        dataChannelOptions: { ordered: false, maxRetransmits: 0 },
+                        success: function (pluginHandle) {
+                            textroom = pluginHandle;
+                            Janus.log("Plugin attached! (" + textroom.getPlugin() + ", id=" + textroom.getId() + ")");
+                            // Setup the DataChannel
+                            var body = { "request": "setup" };
+                            Janus.debug("Sending message (" + JSON.stringify(body) + ")");
+                            textroom.send({ "message": body });
+                            setup_ping();
+                        },
+                        error: function (error) {
+                            console.error("  -- Error attaching plugin...", error);
+                            bootbox.alert("Error attaching plugin... " + error);
+                        },
+                        webrtcState: function (on) {
+                            Janus.log("Janus says our WebRTC PeerConnection is " + (on ? "up" : "down") + " now");
+                            if ($("#videoleft").length > 0) {
+                                $("#videoleft").parent().unblock();
                             }
-                        });
-                    }
-                },
-                ondataopen: function(data) {
-                    Janus.log("The DataChannel is available!");
-                    // Prompt for a display name to join the default room
-                    var m = { "request": "exists", "room": myroom };
-                    textroom.send({"message": m, "success": reply_exists});
-                },
-                ondata: function(data) {
-                    Janus.debug("We got data from the DataChannel! " + data);
-                    //~ $('#datarecv').val(data);
-                    var json = JSON.parse(data);
-                    var transaction = json["transaction"];
-                    if(transactions[transaction]) {
-                        // Someone was waiting for this
-                        transactions[transaction](json);
-                        delete transactions[transaction];
-                        return;
-                    }
-                    var what = json["textroom"];
-                    if(what === "message") {
-                        var msg = json["text"];
-                        received_ping(msg);
-                        //獲得 text
+                        },
+                        onmessage: function (msg, jsep) {
+                            Janus.debug(" ::: Got a message :::");
+                            Janus.debug(msg);
+                            if (msg["error"] !== undefined && msg["error"] !== null) {
+                                bootbox.alert(msg["error"]);
+                            }
+                            if (jsep !== undefined && jsep !== null) {
+                                // Answer
+                                textroom.createAnswer(
+                                    {
+                                        jsep: jsep,
+                                        media: { audio: false, video: false, data: true },	// We only use datachannels
+                                        success: function (jsep) {
+                                            Janus.debug("Got SDP!");
+                                            Janus.debug(jsep);
+                                            var body = { "request": "ack" };
+                                            textroom.send({ "message": body, "jsep": jsep });
+                                        },
+                                        error: function (error) {
+                                            Janus.error("WebRTC error:", error);
+                                            bootbox.alert("WebRTC error... " + JSON.stringify(error));
+                                        }
+                                    });
+                            }
+                        },
+                        ondataopen: function (data) {
+                            Janus.log("The DataChannel is available!");
+                            // Prompt for a display name to join the default room
+                            var m = { "request": "exists", "room": myroom };
+                            textroom.send({ "message": m, "success": reply_exists });
+                        },
+                        ondata: function (data) {
+                            Janus.debug("We got data from the DataChannel! " + data);
+                            //~ $('#datarecv').val(data);
+                            var json = JSON.parse(data);
+                            var transaction = json["transaction"];
+                            if (transactions[transaction]) {
+                                // Someone was waiting for this
+                                transactions[transaction](json);
+                                delete transactions[transaction];
+                                return;
+                            }
+                            var what = json["textroom"];
+                            if (what === "message") {
+                                var msg = json["text"];
+                                received_ping(msg);
+                                //獲得 ping sent 數量
+                                console.log(msg);
 
-                    } else if(what === "destroyed") {
-                            if(json["room"] !== myroom)
+                            } else if (what === "destroyed") {
+                                if (json["room"] !== myroom)
                                     return;
-                            // Room was destroyed, goodbye!
-                            Janus.warn("The room has been destroyed!");
-                            bootbox.alert("The room has been destroyed", function() {
+                                // Room was destroyed, goodbye!
+                                Janus.warn("The room has been destroyed!");
+                                bootbox.alert("The room has been destroyed", function () {
                                     window.location.reload();
-                            });
-                    }
-                },
-                oncleanup: function() {
-                        Janus.log(" ::: Got a cleanup notification :::");
-                        $('#datasend').attr('disabled', true);
-                }
-            });
-        },
-        error: function(error) {
-            Janus.error(error);
-            bootbox.alert(error, function() {
+                                });
+                            }
+                        },
+                        oncleanup: function () {
+                            Janus.log(" ::: Got a cleanup notification :::");
+                            $('#datasend').attr('disabled', true);
+                        }
+                    });
+            },
+            error: function (error) {
+                Janus.error(error);
+                bootbox.alert(error, function () {
                     window.location.reload();
-            });
-        },
-        destroyed: function() {
-            window.location.reload();
-        }
-    });
+                });
+            },
+            destroyed: function () {
+                window.location.reload();
+            }
+        });
 }
 
-function received_ping(msg)
-{
+function received_ping(msg) {
 
-    var t2 = performance.now();
-    rx_ping_times[pings_received] = t2;
+    var t2 = performance.now(); //收到 ping 的當下精準時間
+    rx_ping_times[pings_received] = t2; //紀錄每組 ping 收到的 時間
     ++pings_received;
+    console.log('收到第' + pings_received + '次的 Ping，時間為' + t2);
+
     var t1 = ping_times[msg];
-    if (t1)
-    {
-        if (0 != last_ping_time)
-        {
-            total_jitter += Math.abs(last_ping_time-(t2-t1));
-            var avg_jitter = total_jitter/(pings_received-1);
+    if (t1) {
+        if (0 != last_ping_time) {
+            total_jitter += Math.abs(last_ping_time - (t2 - t1));
+            var avg_jitter = total_jitter / (pings_received - 1);
             $('#average_jitter').html(avg_jitter.toFixed(0));
         }
-        last_ping_time = t2-t1;
+        last_ping_time = t2 - t1;
         total_ping_time += last_ping_time;
+        console.log('最新一次 Ping RTT 時間：' + last_ping_time);
+        //console.log(total_ping_time);
 
     }
-    var avg = total_ping_time/pings_received;
-    $('#chatroom').append("<p>Sent: "+pings_sent);
-    $('#chatroom').append("<p>Received: "+pings_received);
-    var packet_loss = (pings_sent-pings_received)/pings_sent*100;
+    var avg = total_ping_time / pings_received;
+    $('#chatroom').append("<p>發送: " + pings_sent);
+    $('#chatroom').append("<p>獲得: " + pings_received);
+    var packet_loss = (pings_sent - pings_received) / pings_sent * 100;
     $('#pings_sent').html(pings_sent); //發出多少封包
     $('#average_ping_time').html(avg.toFixed(0));
     $('#pings_received').html(pings_received);
     $('#packet_loss').html(packet_loss.toFixed(0));
 
-    calc_moving_average();
+    // calc_moving_average();
+    getAvgPingTime(avg);
+
 }
 
-function calc_moving_average()
-{
-    if (pings_sent > NUM_MOVING_AVERAGE)
-    {
-        var packets_lost = 0;
-        var tot_jitter = 0;
-        var tot_ping = 0;
-        var last_ping = 0;
-        var pings_got = 0;
+function getAvgPingTime(avg) {
 
-        // ignore very last ping sent, in case we haven't received a reply yet
-        for (var i = pings_sent-NUM_MOVING_AVERAGE-1; i < pings_sent-1; ++i)
-        {
-            if (!rx_ping_times[i])
-            {
-                ++packets_lost;
-            }
-            else
-            {
-                ++pings_got;
+    var avgPingTime = avg;
+    if (typeof updateChart === 'function') {
 
-                var ping = rx_ping_times[i]-ping_times[i];
-                if (last_ping == 0)
-                {
-                    if (i > 0 && rx_ping_times[i-1])
-                    {
-                        last_ping = rx_ping_times[i-1]-ping_times[i-1];
-                    }
-                    else
-                    {
-                        last_ping = ping;
-                    }
-                }
-                tot_ping += ping;
-                var jitter = Math.abs(ping-last_ping);
-                tot_jitter += jitter;
-                last_ping = ping;
-            }
-        }
+        updateChart(avgPingTime);
+        // clearInterval(ping_to);
+        // ping_to = null;
 
-        var avg_ping = 0;
-        var avg_jitter = 0;
-        if (pings_got > 0)
-        {
-            avg_ping = tot_ping/pings_got;
-            avg_jitter = tot_jitter/pings_got;
-        }
-
-        // calculate link quality
-        var qual = 0;
-        if (avg_jitter < EXCELLENT_JITTER && packets_lost == 0)
-        {
-            qual = 100;
-        }
-        else if (avg_jitter < GOOD_JITTER && packets_lost == 0)
-        {
-            qual = 75;
-        }
-        else if (avg_jitter < OK_JITTER && packets_lost <= 1)
-        {
-            qual = 50;
-        }
-        else if (packets_lost < NUM_MOVING_AVERAGE/4)
-        {
-            qual = 25;
-        }
-        else
-        {
-            qual = 0;
-        }
-
-        if (meter)
-        {
-            var m = $('#meter')[0];
-            var w = m.width;
-            var h = m.height;
-            meter.clearRect(0, 0, w, h);
-            if (qual >= 50)
-            {
-                meter.fillStyle = "rgb(0,255,0)"; // green
-            }
-            else
-            {
-                meter.fillStyle = "rgb(255,0,0)"; // red
-            }
-            meter.strokeStyle = "rgb(200,200,200)";
-            meter.lineWidth = 0;
-
-            // draw main meter
-            meter.beginPath();
-            meter.moveTo(0,h);
-            meter.lineTo(w*qual/100, h);
-            meter.lineTo(w*qual/100, h-h*qual/100);
-            meter.lineTo(0,h);
-            meter.closePath();
-            meter.fill();
-            meter.stroke();
-            meter.beginPath();
-            meter.moveTo(w/4+0.5, h);
-            meter.lineTo(w/4+0.5, h*3/4);
-            if (qual >= 50)
-            {
-                meter.moveTo(w/2+0.5, h);
-                meter.lineTo(w/2+0.5, h/2);
-                if (qual >= 75)
-                {
-                    meter.moveTo(w*3/4+0.5, h);
-                    meter.lineTo(w*3/4+0.5, h/4);
-                }
-            }
-
-            meter.closePath();
-            meter.stroke();
-
-            var loss = (packets_lost/NUM_MOVING_AVERAGE)*100;
-
-            var t1 = performance.now();
-            if ((!hovering) || (t1-last_hover_time > 2000))
-            {
-                if (hovering)
-                {
-                    last_hover_time = t1;
-                }
-
-                m.title = "Jitter: "+avg_jitter.toFixed(0)+"ms, ping: "+avg_ping.toFixed(0)+"ms, packet loss: "+loss.toFixed(0)+"%";
-            }
-        }
+        
     }
+
 }
 
-function reply_exists(msg)
-{
-    if (typeof(msg["exists"]) != 'undefined')
-    {
+// function calc_moving_average()
+// {
+//     if (pings_sent > NUM_MOVING_AVERAGE)
+//     {
+//         var packets_lost = 0;
+//         var tot_jitter = 0;
+//         var tot_ping = 0;
+//         var last_ping = 0;
+//         var pings_got = 0;
+
+//         // ignore very last ping sent, in case we haven't received a reply yet
+//         for (var i = pings_sent-NUM_MOVING_AVERAGE-1; i < pings_sent-1; ++i)
+//         {
+//             if (!rx_ping_times[i])
+//             {
+//                 ++packets_lost;
+//             }
+//             else
+//             {
+//                 ++pings_got;
+
+//                 var ping = rx_ping_times[i]-ping_times[i];
+//                 if (last_ping == 0)
+//                 {
+//                     if (i > 0 && rx_ping_times[i-1])
+//                     {
+//                         last_ping = rx_ping_times[i-1]-ping_times[i-1];
+//                     }
+//                     else
+//                     {
+//                         last_ping = ping;
+//                     }
+//                 }
+//                 tot_ping += ping;
+//                 var jitter = Math.abs(ping-last_ping);
+//                 tot_jitter += jitter;
+//                 last_ping = ping;
+//             }
+//         }
+
+//         var avg_ping = 0;
+//         var avg_jitter = 0;
+//         if (pings_got > 0)
+//         {
+//             avg_ping = tot_ping/pings_got;
+//             avg_jitter = tot_jitter/pings_got;
+//         }
+
+//         // calculate link quality
+//         var qual = 0;
+//         if (avg_jitter < EXCELLENT_JITTER && packets_lost == 0)
+//         {
+//             qual = 100;
+//         }
+//         else if (avg_jitter < GOOD_JITTER && packets_lost == 0)
+//         {
+//             qual = 75;
+//         }
+//         else if (avg_jitter < OK_JITTER && packets_lost <= 1)
+//         {
+//             qual = 50;
+//         }
+//         else if (packets_lost < NUM_MOVING_AVERAGE/4)
+//         {
+//             qual = 25;
+//         }
+//         else
+//         {
+//             qual = 0;
+//         }
+
+//         if (meter)
+//         {
+//             var m = $('#meter')[0];
+//             var w = m.width;
+//             var h = m.height;
+//             meter.clearRect(0, 0, w, h);
+//             if (qual >= 50)
+//             {
+//                 meter.fillStyle = "rgb(0,255,0)"; // green
+//             }
+//             else
+//             {
+//                 meter.fillStyle = "rgb(255,0,0)"; // red
+//             }
+//             meter.strokeStyle = "rgb(200,200,200)";
+//             meter.lineWidth = 0;
+
+//             // draw main meter
+//             meter.beginPath();
+//             meter.moveTo(0,h);
+//             meter.lineTo(w*qual/100, h);
+//             meter.lineTo(w*qual/100, h-h*qual/100);
+//             meter.lineTo(0,h);
+//             meter.closePath();
+//             meter.fill();
+//             meter.stroke();
+//             meter.beginPath();
+//             meter.moveTo(w/4+0.5, h);
+//             meter.lineTo(w/4+0.5, h*3/4);
+//             if (qual >= 50)
+//             {
+//                 meter.moveTo(w/2+0.5, h);
+//                 meter.lineTo(w/2+0.5, h/2);
+//                 if (qual >= 75)
+//                 {
+//                     meter.moveTo(w*3/4+0.5, h);
+//                     meter.lineTo(w*3/4+0.5, h/4);
+//                 }
+//             }
+
+//             meter.closePath();
+//             meter.stroke();
+
+//             var loss = (packets_lost/NUM_MOVING_AVERAGE)*100;
+
+//             var t1 = performance.now();
+//             if ((!hovering) || (t1-last_hover_time > 2000))
+//             {
+//                 if (hovering)
+//                 {
+//                     last_hover_time = t1;
+//                     console.log(last_hover_time);
+//                 }
+
+//                 m.title = "Jitter: "+avg_jitter.toFixed(0)+"ms, ping: "+avg_ping.toFixed(0)+"ms, packet loss: "+loss.toFixed(0)+"%";
+//                 console.log(m);
+//                 console.log(m.title);
+//             }
+//         }
+//     }
+// }
+
+function reply_exists(msg) {
+    if (typeof (msg["exists"]) != 'undefined') {
         var exists = msg["exists"];
-        if (exists)
-        {
+        if (exists) {
             registerUsername();
             start_ping();
         }
-        else
-        {
+        else {
             var msg = { "request": "create", "room": myroom };
-            textroom.send({"message": msg, "success": reply_create});
+            textroom.send({ "message": msg, "success": reply_create });
         }
     }
 }
 
-function reply_create(msg)
-{
+function reply_create(msg) {
     registerUsername();
     start_ping();
 }
@@ -422,25 +434,26 @@ function setup_ping()
 //開始 ping
 {
     $('#start').removeAttr('disabled').html("Stop").unbind('click')
-        .click(function() {
-            if (null != ping_to)
-            {
+        .click(function () {
+            if (null != ping_to) {
+                console.log('點擊取消：' + ping_to);
                 clearInterval(ping_to);
                 ping_to = null;
+
             }
             //$(this).attr('disabled', true);
             //janus.destroy();
             $('#start').html("Start").unbind('click')
-                .click(function() {
+                .click(function () {
                     $('#start').html("Start")
+                    console.log('點擊開始：' + ping_to);
                     setup_ping();
                     start_ping();
                 });
         });
 }
 
-function start_ping()
-{
+function start_ping() {
     total_ping_time = 0;
     pings_sent = 0;
     pings_received = 0;
@@ -448,23 +461,27 @@ function start_ping()
     last_ping_time = 0;
     ping_times = {};
     ping_to = setInterval(send_ping, ping_interval);
+    console.log('開始計時');
 }
 
-function send_ping()
-{
+function send_ping() {
     var message = {
-            textroom: "message",
-            transaction: randomString(12),
-            ack: false,
-            room: myroom,
-            text: ""+pings_sent,
+        textroom: "message",
+        transaction: randomString(12),
+        ack: false,
+        room: myroom,
+        text: "" + pings_sent,
     };
     ping_times[pings_sent] = performance.now();
+
+    console.log('送出第' + (pings_sent + 1) + '次的 Ping，時間為' + ping_times[pings_sent]);
+
     ++pings_sent;
+
     textroom.data({
-            text: JSON.stringify(message),
-            error: function(reason) { bootbox.alert(reason); },
-            success: function() { $('#datasend').val(''); }
+        text: JSON.stringify(message),
+        error: function (reason) { bootbox.alert(reason); },
+        success: function () { $('#datasend').val(''); }
     });
 }
 
@@ -472,35 +489,35 @@ function registerUsername() {
     // Try a registration
     var transaction = randomString(12);
     var register = {
-            textroom: "join",
-            transaction: transaction,
-            room: myroom,
-            username: myid,
-            display: myusername
+        textroom: "join",
+        transaction: transaction,
+        room: myroom,
+        username: myid,
+        display: myusername
     };
-    transactions[transaction] = function(response) {
-            if(response["textroom"] === "error") {
-                    // Something went wrong
-                    if(response["error_code"] === 417) {
-                            // This is a "no such room" error: give a more meaningful description
-                            bootbox.alert(
-                                    "<p>Apparently room <code>" + myroom + "</code> (the one this demo uses as a test room) " +
-                                    "does not exist...</p><p>Do you have an updated <code>janus.plugin.textroom.cfg</code> " +
-                                    "configuration file? If not, make sure you copy the details of room <code>" + myroom + "</code> " +
-                                    "from that sample in your current configuration file, then restart Janus and try again."
-                            );
-                    } else {
-                            bootbox.alert(response["error"]);
-                    }
-                    return;
+    transactions[transaction] = function (response) {
+        if (response["textroom"] === "error") {
+            // Something went wrong
+            if (response["error_code"] === 417) {
+                // This is a "no such room" error: give a more meaningful description
+                bootbox.alert(
+                    "<p>Apparently room <code>" + myroom + "</code> (the one this demo uses as a test room) " +
+                    "does not exist...</p><p>Do you have an updated <code>janus.plugin.textroom.cfg</code> " +
+                    "configuration file? If not, make sure you copy the details of room <code>" + myroom + "</code> " +
+                    "from that sample in your current configuration file, then restart Janus and try again."
+                );
+            } else {
+                bootbox.alert(response["error"]);
             }
-            // We're in
+            return;
+        }
+        // We're in
     };
     textroom.data({
-            text: JSON.stringify(register),
-            error: function(reason) {
-                    bootbox.alert(reason);
-            }
+        text: JSON.stringify(register),
+        error: function (reason) {
+            bootbox.alert(reason);
+        }
     });
 }
 
@@ -509,8 +526,8 @@ function randomString(len, charSet) {
     charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var randomString = '';
     for (var i = 0; i < len; i++) {
-    	var randomPoz = Math.floor(Math.random() * charSet.length);
-    	randomString += charSet.substring(randomPoz,randomPoz+1);
+        var randomPoz = Math.floor(Math.random() * charSet.length);
+        randomString += charSet.substring(randomPoz, randomPoz + 1);
     }
     return randomString;
 }
