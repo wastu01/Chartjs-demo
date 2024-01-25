@@ -130,10 +130,9 @@ var myChart = new Chart(ctx, config);
 //console.log(myChart);
 
 
-function updateChart(avgPingTime) {
-    //console('呼叫圖表更新，參數：'+ avgPingTime);
-    addData(myChart, '下一筆', avgPingTime);
-    //myChart.data.datasets[0].data.push(avgPingTime);
+function updateChart(label, avgPingTime) {
+
+    addData(myChart, label, avgPingTime);
 }
 
 //資料更新區塊
