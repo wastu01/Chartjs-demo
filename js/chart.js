@@ -1,7 +1,7 @@
 // Just learning how to add motion graphic base on it
 
 Chart.defaults.font.size = 20;
-Chart.defaults.elements.line.borderWidth = 5;
+Chart.defaults.elements.line.borderWidth = 2;
 
 
 // grid configuration
@@ -12,123 +12,240 @@ const CHART_AREA = true;
 const TICKS = true;
 
 
-// fake dataset
+// 樣式定義區塊
 
-const labels = ["0", "1", "2", "3", "4", "5"];
+const backgroundColor = ['#45f4f7'];
+const borderColor = ['#00bfaf'];
 
-console.log(typeof labels);
 
-const datas = [2.3, 1.2, 1.5, 1.4, 1.3, 1.4];
 
-console.log(typeof datas);
+// 資料定義區塊 (labels,dataValue) = (x,y)
+const labels = ['1筆', '2筆', '3筆', '4筆', '5筆', '6'];
+const dataValue = [1, 0, 0, 0, 0, 0];
+const defaultValue = 0;
 
-var ctx = document.getElementById('myChart').getContext('2d');
+console.log('初始起始資料：' + labels.indexOf('1筆'));
+console.log('初始末端資料：' + labels.slice(labels.length - 1));
 
-var chart = new Chart(ctx, {
+
+const dataValue2 = [0, 0, 0, 0, 0, 0];
+
+dataValue2.fill(defaultValue);
+
+
+
+//labels.shift();
+
+//參數設定區塊
+
+const data = {
+    labels: labels,
+    datasets: [{
+        label: 'Ping RTT',
+        backgroundColor: backgroundColor,
+        borderColor: borderColor,
+        borderWidth: 5,
+        data: dataValue,
+    }, {
+        label: '基準值',
+        backgroundColor: 'black',
+        borderColor: 'black',
+        borderWidth: 5,
+        data: dataValue2,
+    }
+    ]
+};
+
+const config = {
     type: 'line',
-    data: {
-        labels: labels,
-        datasets: [{
-            label: 'Ping Time',
-            data: datas,
-            backgroundColor: '#fffcf5',
-            borderColor: '#27ae60',
-            borderWidth: 4,
-
-        }]
-    },
+    data: data,
     options: {
         responsive: true,
-
         interaction: {
-            intersect: false,
-            mode: 'index',
+            intersect: true,
+            mode: 'nearest',
         },
-        layout: {
-            padding: 1
-        },
+
         scales: {
             x: {
-                ticks: {
-                    color: 'black',
-                },
                 grid: {
-                    display: DISPLAY,
-                    drawOnChartArea: CHART_AREA,
-                    drawTicks: TICKS,
-                    color: '#ffffff44',
+                    display: false,
+                    color: 'gray',
                     width: 2,
+
+                },
+                ticks: {
+                    color: 'black'
                 },
                 border: {
-                    display: DISPLAY,
+                    display: true,
                     dash: [6, 6],
                     color: 'black',
                 }
-
             },
             y: {
                 beginAtZero: true,
+                //min: 0,     // 設定 y 軸的最小值
+                //max: 10,    // 設定 y 軸的最大值
+                grid: {
+                    color: 'gray',
+                    width: 2,
+
+                },
                 ticks: {
                     color: 'black',
                     // 其他 Y 軸設定...
                 },
-                grid:{
-                    color: '#ffffff44',
-                    width: 2,
-
-                },
                 border: {
                     dash: [6, 6],
                     color: 'black',
                 },
-                
 
-            }
+            },
+
         },
-        plugins: {
-            title: {
-                display: true,
-                text: '圖表顯示處',
-                padding: {
-                    top: 10,
-                    bottom: 30
-                }
-            }
-             
-
-        }
+    }
+};
 
 
-    },
+// var myChart; // 圖表初始化變數宣告
 
+document.addEventListener('DOMContentLoaded', function () {
+    initChart();
 
 });
 
+//渲染圖表區塊
 
-function addData(chart, label, newData) {
-    chart.data.labels.push(label);
-    chart.data.datasets.forEach((dataset) => {
-        dataset.data.push(newData);
-    });
-    chart.update();
+function initChart() {
+
+    //return myChart;
+
 }
 
+var ctx = document.getElementById('myChart').getContext('2d');
+
+var myChart = new Chart(ctx, config);
+
+//console.log(myChart);
+
+
+function updateChart(avgPingTime) {
+    //console('呼叫圖表更新，參數：'+ avgPingTime);
+    addData(myChart, '下一筆', avgPingTime);
+    //myChart.data.datasets[0].data.push(avgPingTime);
+}
+
+//資料更新區塊
+
+
+//增加資料
+
+function addData(myChart, label, newData) {
+
+    //console.log(myChart);
+
+    myChart.data.labels.push(label);
+
+    myChart.data.datasets.forEach((dataset) => {
+        dataset.data.push(newData);
+
+    });
+
+    dataValue2.fill(defaultValue);
+
+
+
+    //shiftValue(myChart);
+
+    //console.log(myChart.data.labels);
+    let lastIndex = myChart.data.datasets[0].data.length;
+    console.log("Ｘ軸固定數量:" + (lastIndex));
+
+    myChart.update();
+
+    //console.log("末筆資料："+myChart.data.labels[5]);
+
+    console.log("末筆 X 軸標籤：" + labels.slice(labels.length - 1));
+
+}
 
 document.getElementById('addDataButton').addEventListener('click', function () {
-    addData(chart, "5", [3.1]);
+    const currentSeconds = getCurrentSeconds(); // 從 time.js 獲取秒數
+    addData(myChart, currentSeconds, getRandomValue());
 
 });
 
-function addData(chart, label, newData) {
-    chart.data.labels.push(label);
-    chart.data.datasets.forEach((dataset) => {
-        dataset.data.push(newData);
+
+//刪除資料
+
+function popData(myChart) {
+    myChart.data.labels.pop();
+    myChart.data.datasets.forEach((dataset) => {
+        dataset.data.pop();
     });
-    chart.update();
+    myChart.update();
 }
 
-
 document.getElementById('popDataButton').addEventListener('click', function () {
-    addData(chart, "5", [3.1]);
+    popData(myChart);
 
 });
+
+
+//首項增加預設資料
+
+function unshiftValue(myChart) {
+
+    labels.unshift('初始值');
+    dataValue.unshift('9');
+    console.log(labels);
+    myChart.update();
+
+
+}
+
+//   document.getElementById('unshiftDataButton').addEventListener('click', function () {
+//     unshiftValue(myChart);
+//   });
+
+//移除首項資料
+
+function shiftValue(myChart) {
+
+    labels.shift();
+    dataValue.shift();
+    dataValue2.shift();
+    myChart.update();
+
+
+}
+
+//   document.getElementById('shiftDataButton').addEventListener('click', function () {
+//     shiftValue(myChart);
+//   });
+
+// 模擬假資料
+
+function getRandomValue() {
+    return Math.floor(Math.random() * 10);
+}
+
+//var clock = setTimeout(TimeOut, 1000);
+
+function TimeOut() {
+    //console.log("1time-out");
+
+    const currentSeconds = getCurrentSeconds();
+    addData(myChart, currentSeconds, getRandomValue());
+
+}
+
+//var clock = setInterval(Timer , 5000);
+
+function Timer() {
+    console.log("Keep counting");
+    const currentSeconds = getCurrentSeconds();
+    addData(myChart, currentSeconds, getRandomValue());
+
+}
