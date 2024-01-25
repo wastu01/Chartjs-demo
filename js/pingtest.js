@@ -259,24 +259,18 @@ function received_ping(msg) {
     $('#pings_received').html(pings_received);
     $('#packet_loss').html(packet_loss.toFixed(0));
 
-    // calc_moving_average();
-    getAvgPingTime(avg);
+    // calc_moving_average();專案本來的圖表計算函式
+
+    updateChartData(pings_received, avg);
 
 }
 
-function getAvgPingTime(avg) {
-
-    var avgPingTime = avg;
+function updateChartData(label, avgPingTime) {
     if (typeof updateChart === 'function') {
-
-        updateChart(avgPingTime);
-        // clearInterval(ping_to);
-        // ping_to = null;
-
-        
+        updateChart(label, avgPingTime);
     }
-
 }
+
 
 // function calc_moving_average()
 // {
