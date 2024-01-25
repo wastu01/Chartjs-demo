@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>網頁視覺化圖表-折線圖</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="./css/bootstrap.css" type="text/css" />
+  <!-- Costume CSS -->
+  <link rel="stylesheet" href="./css/custome.css">
+  <style>
+    .chart-container {
+      position: relative;
+      height: 60vh;
+      width: 90vw;
+      padding: 2rem;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="row">
+      <div class="col-12">
+        <h1>Ping-test-ChartJS</h1>
+        <div class="chart-container">
+          <canvas id="myChart" width="" height="" aria-label="Chart" role="img">
+            <p>Your browser does not support the canvas element.</p>
+
+          </canvas>
+        </div>
+        <button class="btn" id="addDataButton">點我增加末項資料</button>
+        <button class="btn" id="popDataButton">點我刪除末項資料</button>
+        <button class="btn" id="unshiftDataButton">點我增加首項資料</button>
+        <button class="btn" id="shiftDataButton">點我移除首項資料</button>
+
+      </div>
+
+
+    </div>
+    <br>
+    <div class="row">
+
+      <div class="col-4">
+        <p><a href="https://hackmd.io/@DCT/Chartjs-web-visualization-learning-note" target="_blank"
+            rel="noopener noreferrer" class="link-primary">學習筆記</a></p>
+      </div>
+      <div class="col-4">
+        <p><a href="https://www.groupworld.net/pingtest.html" target="_blank" rel="noopener noreferrer">1. ping-test
+          </a>
+        </p>
+
+      </div>
+      <div class="col-4">
+        <p><a href="https://www.chartjs.org/docs/latest/getting-started/" target="_blank" rel="noopener noreferrer">2.
+            chart.js </a></p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="./js/time.js"></script>
+
+  <script>
+
+    // 樣式定義區塊
+
+    const backgroundColor = ['#45f4f7'];
+    const borderColor = ['#00bfaf'];
+
+
+
+    // 資料定義區塊 (labels,dataValue) = (x,y)
+    const labels = ['1筆', '2筆', '3筆', '4筆', '5筆', '6'];
+    const dataValue = [0, 1, 2, 3, 4, 2];
+    const defaultValue = 0.9;
+
+    console.log(labels.slice(labels.length - 1));
+
+
+    const dataValue2 = [0, 0, 0, 0, 0, 0];
+
+    dataValue2.fill(defaultValue);
+
+
+
+    //labels.shift();
+
+    //參數設定區塊
+
+    const data = {
+      labels: labels,
+      datasets: [{
+        label: 'Ping RTT',
+        backgroundColor: backgroundColor,
+        borderColor: borderColor,
+        borderWidth: 5,
+        data: dataValue,
+      }, {
+        label: '理想情況',
+        backgroundColor: 'black',
+        borderColor: 'black',
+        borderWidth: 5,
+        data: dataValue2,
+      }
+      ]
+    };
+
+    const config = {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: true,
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+
+        scales: {
+          x: {
+            grid: {
+              display: false,
+              color: 'gray',
+              width: 2,
+
+            },
+            ticks: {
+              color: 'black'
+            },
+            border: {
+              display: true,
+              dash: [6, 6],
+              color: 'black',
+            }
+          },
+          y: {
+            beginAtZero: true,
+            //min: 0,     // 設定 y 軸的最小值
+            //max: 10,    // 設定 y 軸的最大值
+            grid: {
+              color: 'gray',
+              width: 2,
+
+            },
+            ticks: {
+              color: 'black',
+              // 其他 Y 軸設定...
+            },
+            border: {
+              dash: [6, 6],
+              color: 'black',
+            },
+
+          },
+
+        },
+      }
+    };
+
+
+    //渲染圖表區塊
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    var myChart = new Chart(ctx, config);
+
+    //資料更新區塊
+
+
+    //增加資料
+
+    function addData(myChart, label, newData) {
+
+      myChart.data.labels.push(label);
+
+      myChart.data.datasets.forEach((dataset) => {
+        dataset.data.push(newData);
+
+      });
+
+      dataValue2.fill(defaultValue);
+
+
+
+      shiftValue(myChart);
+
+      //console.log(myChart.data.labels);
+      let lastIndex = myChart.data.datasets[0].data.length;
+      console.log("Ｘ軸固定數量:" + (lastIndex));
+
+      myChart.update();
+
+      //console.log("末筆資料："+myChart.data.labels[5]);
+
+      console.log("末筆資料：" + labels.slice(labels.length - 1));
+
+    }
+
+    document.getElementById('addDataButton').addEventListener('click', function () {
+      const currentSeconds = getCurrentSeconds(); // 從 time.js 獲取秒數
+      addData(myChart, currentSeconds, getRandomValue());
+
+    });
+
+
+    //刪除資料
+
+    function popData(myChart) {
+      myChart.data.labels.pop();
+      myChart.data.datasets.forEach((dataset) => {
+        dataset.data.pop();
+      });
+      myChart.update();
+    }
+
+    document.getElementById('popDataButton').addEventListener('click', function () {
+      popData(myChart);
+
+    });
+
+
+    //首項增加預設資料
+
+    function unshiftValue(myChart) {
+
+      labels.unshift('初始值');
+      dataValue.unshift('9');
+      console.log(labels);
+      myChart.update();
+
+
+    }
+
+    document.getElementById('unshiftDataButton').addEventListener('click', function () {
+      unshiftValue(myChart);
+    });
+
+    //移除首項資料
+
+    function shiftValue(myChart) {
+
+      labels.shift();
+      dataValue.shift();
+      dataValue2.shift();
+      myChart.update();
+
+
+    }
+
+    document.getElementById('shiftDataButton').addEventListener('click', function () {
+      shiftValue(myChart);
+    });
+
+
+    // 模擬假資料
+
+    function getRandomValue() {
+      return Math.floor(Math.random() * 10);
+    }
+
+    var clock = setTimeout(TimeOut, 1000);
+
+    function TimeOut() {
+      //console.log("1time-out");
+      console.log(labels.indexOf('1筆'));
+      const currentSeconds = getCurrentSeconds();
+      addData(myChart, currentSeconds, getRandomValue());
+
+    }
+
+    //var clock = setInterval(Timer , 5000);
+
+    function Timer() {
+      console.log("Keep counting");
+      const currentSeconds = getCurrentSeconds();
+      addData(myChart, currentSeconds, getRandomValue());
+
+    }
+
+
+    //重新點擊量測，圖表重置
+
+
+    //除錯用
+
+    //x軸
+    //console.log(myChart.data.labels);
+
+
+    //y軸
+    // 遍歷每個數據集並輸出 Y 軸數據
+    myChart.data.datasets.forEach((dataset, index) => {
+      //console.log(`數據集 ${index + 1} 的 Y 軸數據:`, dataset.data);
+    });
+
+  </script>
+
+</body>
+
+</html>
