@@ -1,7 +1,11 @@
-Chartjs 動態圖表呈現網路品質狀態 Ping RTT
+Chartjs 動態圖表呈現網路品質狀態 
 https://wastu01.github.io/Chartjs-demo
 
 learning how to put dynmaic data into chart base on original Pingtest project.
+
+# Laening note
+
+https://hackmd.io/@DCT/Chartjs-web-visualization-learning-note
 
 # pingtest
 
