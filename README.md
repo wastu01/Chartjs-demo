@@ -1,26 +1,11 @@
-Chartjs 動態圖表串接實作構思 (未完成)
+Chartjs 動態圖表呈現網路品質狀態 
 https://wastu01.github.io/Chartjs-demo
 
-待解決：
+learning how to put dynmaic data into chart base on original Pingtest project.
 
-Chartjs add data 是如何達成的？ action ?
-https://www.chartjs.org/docs/latest/samples/line/line.html
+# Laening note
 
-ping_got 跟 ping received 差異
-
-need to fixed : what is different ping_got ＆ ping received ?
-
-learning how to add motion graphic（real time render） base on it (Pingtest).
-
-graphic like : 
-https://playground.anychart.com/docs/samples/CRUD_01
-https://www.chartjs.org/docs/latest/charts/line.html
-
-Learning Source : 
-
-https://ithelp.ithome.com.tw/articles/10198687
-http://ccsig.blogspot.com/2019/01/chartjs.html
-https://alicialin2020.medium.com/chart-js-%E8%87%AA%E5%AD%B8%E5%88%86%E4%BA%AB-243e11851a47
+https://hackmd.io/@DCT/Chartjs-web-visualization-learning-note
 
 # pingtest
 
