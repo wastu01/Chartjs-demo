@@ -49,7 +49,7 @@ if (window.location.protocol === 'http:')
 else
     server = "https://" + window.location.hostname + ":8089/janus";
 
-server = "http://211.73.81.36:8088/janus";
+server = "http://x.x.x.x:8088/janus";
 
 // console.log(server);
 
