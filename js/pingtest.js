@@ -416,7 +416,7 @@ function setup_ping()
     $('#start').removeAttr('disabled').html("Stop").unbind('click')
         .click(function () {
             if (null != ping_to) {
-                console.log('點擊取消' + ping_to);
+                console.log('點擊取消');
                 clearInterval(ping_to);
                 ping_to = null;
 
@@ -425,7 +425,6 @@ function setup_ping()
             if (myChart && typeof myChart.reset === 'function') {
                 console.log('重置');
                 resetChart();
-                myChart.reset();
              }
             
             //$(this).attr('disabled', true);
@@ -450,7 +449,7 @@ function start_ping() {
     last_ping_time = 0;
     ping_times = {};
     ping_to = setInterval(send_ping, ping_interval);
-    console.log('開始計時' + ping_to);
+    console.log('開始計時');
 }
 
 function send_ping() {

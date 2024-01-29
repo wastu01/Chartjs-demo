@@ -145,9 +145,10 @@ function resetChart() {
 }
 
 
-function updateChart(label, avgPingTime) {
+function updateChart(label, avgPingTime, lastPingTime) {
 
-    addData(myChart, label, avgPingTime);
+    addData(myChart, label, avgPingTime, 30);
+    console.log(lastPingTime);
 }
 
 //資料更新區塊
@@ -155,24 +156,23 @@ function updateChart(label, avgPingTime) {
 
 //增加資料
 
-function addData(myChart, label, newData) {
+function addData(myChart, label, newData, maxPoints) {
 
     //console.log(myChart);
 
     myChart.data.labels.push(label);
+    myChart.data.datasets[0].data.push(newData);
 
-    myChart.data.datasets.forEach((dataset) => {
-        dataset.data.push(newData);
-
-    });
+    if(myChart.data.labels.length > maxPoints) {
+        shiftValue(myChart);
+    } else {
+        myChart.update();
+    }
 
     dataValue2.fill(defaultValue);
 
+    //console.log(myChart.data.labels);
 
-
-    shiftValue(myChart);
-
-    console.log(myChart.data.labels);
     let lastIndex = myChart.data.datasets[0].data.length;
     console.log("Ｘ軸固定數量:" + (lastIndex));
 
@@ -225,12 +225,13 @@ function unshiftValue(myChart) {
 
 function shiftValue(myChart) {
 
-    labels.shift();
-    dataValue.shift();
-    dataValue2.shift();
+    myChart.data.labels.shift();
+    myChart.data.datasets.forEach((dataset) => {
+        dataset.data.shift();
+    });
     myChart.update();
 
-
+    console.log('移除');
 }
 
 //   document.getElementById('shiftDataButton').addEventListener('click', function () {
