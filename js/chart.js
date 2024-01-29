@@ -1,6 +1,6 @@
 // Just learning how to add motion graphic base on it
 
-Chart.defaults.font.size = 20;
+Chart.defaults.font.size = 10;
 Chart.defaults.elements.line.borderWidth = 2;
 
 
@@ -20,38 +20,42 @@ const borderColor = ['#00bfaf'];
 
 
 // 資料定義區塊 (labels,dataValue) = (x,y)
-const labels = ['1筆', '2筆', '3筆', '4筆', '5筆', '6'];
-const dataValue = [1, 0, 0, 0, 0, 0];
-const defaultValue = 0;
+const labels = ['尚未啟動', '尚未啟動', '尚未啟動', '尚未啟動', '尚未啟動', '尚未啟動'];
+const dataValue = [0, 0, 0, 0, 0, 0];
 
-console.log('初始起始資料：' + labels.indexOf('1筆'));
+
 console.log('初始末端資料：' + labels.slice(labels.length - 1));
 
 
 const dataValue2 = [0, 0, 0, 0, 0, 0];
+const defaultValue = 1;
 
 dataValue2.fill(defaultValue);
 
+// 可新增最新一筆的延遲時間 (未開發)
+// 目前設置為固定值(defaultValue)
+
+// 加入 datasets 即可
+// ,{
+//     label: '每一筆延遲時間',
+//     backgroundColor: 'black',
+//     borderColor: 'black',
+//     borderWidth: 5,
+//     data: dataValue2,
+// }
 
 
-//labels.shift();
 
 //參數設定區塊
 
 const data = {
     labels: labels,
     datasets: [{
-        label: 'Ping RTT',
+        label: '平均延遲時間',
         backgroundColor: backgroundColor,
         borderColor: borderColor,
         borderWidth: 5,
         data: dataValue,
-    }, {
-        label: '基準值',
-        backgroundColor: 'black',
-        borderColor: 'black',
-        borderWidth: 5,
-        data: dataValue2,
     }
     ]
 };
@@ -62,8 +66,8 @@ const config = {
     options: {
         responsive: true,
         interaction: {
-            intersect: true,
-            mode: 'nearest',
+            intersect: false,
+            mode: 'index',
         },
 
         scales: {
@@ -108,7 +112,6 @@ const config = {
 };
 
 
-// var myChart; // 圖表初始化變數宣告
 
 document.addEventListener('DOMContentLoaded', function () {
     initChart();
@@ -128,6 +131,18 @@ var ctx = document.getElementById('myChart').getContext('2d');
 var myChart = new Chart(ctx, config);
 
 //console.log(myChart);
+
+
+function resetChart() {
+
+    myChart.data.labels = [];
+    myChart.data.datasets.forEach((dataset) => {
+        dataset.data = [];
+    });
+
+    myChart.update();
+
+}
 
 
 function updateChart(label, avgPingTime) {
@@ -155,15 +170,13 @@ function addData(myChart, label, newData) {
 
 
 
-    //shiftValue(myChart);
+    shiftValue(myChart);
 
-    //console.log(myChart.data.labels);
+    console.log(myChart.data.labels);
     let lastIndex = myChart.data.datasets[0].data.length;
     console.log("Ｘ軸固定數量:" + (lastIndex));
 
     myChart.update();
-
-    //console.log("末筆資料："+myChart.data.labels[5]);
 
     console.log("末筆 X 軸標籤：" + labels.slice(labels.length - 1));
 

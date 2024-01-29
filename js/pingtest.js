@@ -49,7 +49,7 @@ if (window.location.protocol === 'http:')
 else
     server = "https://" + window.location.hostname + ":8089/janus";
 
-server = "http://x.x.x.x:8088/janus";
+server = "http://211.73.81.36:8088/janus";
 
 // console.log(server);
 
@@ -63,11 +63,11 @@ var textroom = null;
 var hovering = false;
 var last_hover_time = 0;
 var ping_to = null;
-var ping_interval = 2000; //打 Ping 頻率
+var ping_interval = 1300; //打 Ping 頻率
 var pings_sent = 0;
 var pings_received = 0;
 var opaqueId = "pingtest-" + Janus.randomString(12); // 亂數生成 text
-var NUM_MOVING_AVERAGE = 15; //多少後開始畫圖
+var NUM_MOVING_AVERAGE = 15; 
 
 var EXCELLENT_JITTER = 50;
 var GOOD_JITTER = 100;
@@ -82,8 +82,12 @@ var transactions = {}
 
 $(document).ready(function () {
 
+    //原專案圖表互動事件
+    //當 user 滑鼠滑到圖表的區塊 (id=meter) 
+    //才會更新原始(三角形)的圖表
+
+
     $('#meter').on('mouseover', function () {
-        //圖片顯示區
         hovering = true;
         last_hover_time = performance.now();
         //console.log(last_hover_time);
@@ -94,7 +98,6 @@ $(document).ready(function () {
     });
     if ($('#meter').length > 0) {
         meter = $('#meter')[0].getContext('2d');
-        //canvas
 
     }
 
@@ -104,23 +107,24 @@ $(document).ready(function () {
 function start_janus() {
     // Initialize the library (all console debuggers enabled)
     Janus.init({
-        debug: "false", callback: function () {
+        debug: ["debug"], callback: function () {
+            // debug: "all"，console 可看到 Janus.log 輸出所有訊息
             // Use a button to start the demo
             $('#start').one('click', function () {
                 start_pings();
-                //隱藏按鈕
-                //顯示圖表
+                //後續可開發項目
+                //點擊按鈕後才顯示圖表功能
             });
         }
     });
 }
 
 function start_pings() {
-    //刪除點擊功能事件
+    //移除點擊功能
     $(this).attr('disabled', true).unbind('click');
     // Make sure the browser supports WebRTC
     if (!Janus.isWebrtcSupported()) {
-        bootbox.alert("No WebRTC support... ");
+        bootbox.alert("您的瀏覽器不支持 WebRTC... ");
         return;
     }
     // Create session
@@ -199,7 +203,7 @@ function start_pings() {
                             if (what === "message") {
                                 var msg = json["text"];
                                 received_ping(msg);
-                                //獲得 ping sent 數量
+                                //第幾筆 Ping received 數量
                                 console.log(msg);
 
                             } else if (what === "destroyed") {
@@ -208,7 +212,8 @@ function start_pings() {
                                 // Room was destroyed, goodbye!
                                 Janus.warn("The room has been destroyed!");
                                 bootbox.alert("The room has been destroyed", function () {
-                                    window.location.reload();
+                                    //window.location.reload();
+                                    //請用戶自行重整頁面
                                 });
                             }
                         },
@@ -222,10 +227,13 @@ function start_pings() {
                 Janus.error(error);
                 bootbox.alert(error, function () {
                     window.location.reload();
+                    //請用戶自行重整頁面
                 });
+                // error錯誤訊息，並重整頁面
             },
             destroyed: function () {
-                window.location.reload();
+                // window.location.reload();
+                //請用戶自行重整頁面
             }
         });
 }
@@ -261,149 +269,127 @@ function received_ping(msg) {
 
     // calc_moving_average();專案本來的圖表計算函式
 
-    updateChartData(pings_received, avg);
+    updateChartData(pings_received, avg, last_ping_time);
 
 }
 
-function updateChartData(label, avgPingTime) {
+function updateChartData(label, avgPingTime, lastPingTime) {
     if (typeof updateChart === 'function') {
-        updateChart(label, avgPingTime);
+        updateChart(label, avgPingTime, lastPingTime);
     }
 }
 
 
-// function calc_moving_average()
-// {
-//     if (pings_sent > NUM_MOVING_AVERAGE)
-//     {
-//         var packets_lost = 0;
-//         var tot_jitter = 0;
-//         var tot_ping = 0;
-//         var last_ping = 0;
-//         var pings_got = 0;
+function calc_moving_average() {
+    if (pings_sent > NUM_MOVING_AVERAGE) {
+        var packets_lost = 0;
+        var tot_jitter = 0;
+        var tot_ping = 0;
+        var last_ping = 0;
+        var pings_got = 0;
 
-//         // ignore very last ping sent, in case we haven't received a reply yet
-//         for (var i = pings_sent-NUM_MOVING_AVERAGE-1; i < pings_sent-1; ++i)
-//         {
-//             if (!rx_ping_times[i])
-//             {
-//                 ++packets_lost;
-//             }
-//             else
-//             {
-//                 ++pings_got;
+        // ignore very last ping sent, in case we haven't received a reply yet
+        for (var i = pings_sent - NUM_MOVING_AVERAGE - 1; i < pings_sent - 1; ++i) {
+            if (!rx_ping_times[i]) {
+                ++packets_lost;
+            }
+            else {
+                ++pings_got;
 
-//                 var ping = rx_ping_times[i]-ping_times[i];
-//                 if (last_ping == 0)
-//                 {
-//                     if (i > 0 && rx_ping_times[i-1])
-//                     {
-//                         last_ping = rx_ping_times[i-1]-ping_times[i-1];
-//                     }
-//                     else
-//                     {
-//                         last_ping = ping;
-//                     }
-//                 }
-//                 tot_ping += ping;
-//                 var jitter = Math.abs(ping-last_ping);
-//                 tot_jitter += jitter;
-//                 last_ping = ping;
-//             }
-//         }
+                var ping = rx_ping_times[i] - ping_times[i];
+                if (last_ping == 0) {
+                    if (i > 0 && rx_ping_times[i - 1]) {
+                        last_ping = rx_ping_times[i - 1] - ping_times[i - 1];
+                    }
+                    else {
+                        last_ping = ping;
+                    }
+                }
+                tot_ping += ping;
+                var jitter = Math.abs(ping - last_ping);
+                tot_jitter += jitter;
+                last_ping = ping;
+            }
+        }
 
-//         var avg_ping = 0;
-//         var avg_jitter = 0;
-//         if (pings_got > 0)
-//         {
-//             avg_ping = tot_ping/pings_got;
-//             avg_jitter = tot_jitter/pings_got;
-//         }
+        var avg_ping = 0;
+        var avg_jitter = 0;
+        if (pings_got > 0) {
+            avg_ping = tot_ping / pings_got;
+            avg_jitter = tot_jitter / pings_got;
+        }
 
-//         // calculate link quality
-//         var qual = 0;
-//         if (avg_jitter < EXCELLENT_JITTER && packets_lost == 0)
-//         {
-//             qual = 100;
-//         }
-//         else if (avg_jitter < GOOD_JITTER && packets_lost == 0)
-//         {
-//             qual = 75;
-//         }
-//         else if (avg_jitter < OK_JITTER && packets_lost <= 1)
-//         {
-//             qual = 50;
-//         }
-//         else if (packets_lost < NUM_MOVING_AVERAGE/4)
-//         {
-//             qual = 25;
-//         }
-//         else
-//         {
-//             qual = 0;
-//         }
+        // calculate link quality
+        var qual = 0;
+        if (avg_jitter < EXCELLENT_JITTER && packets_lost == 0) {
+            qual = 100;
+        }
+        else if (avg_jitter < GOOD_JITTER && packets_lost == 0) {
+            qual = 75;
+        }
+        else if (avg_jitter < OK_JITTER && packets_lost <= 1) {
+            qual = 50;
+        }
+        else if (packets_lost < NUM_MOVING_AVERAGE / 4) {
+            qual = 25;
+        }
+        else {
+            qual = 0;
+        }
 
-//         if (meter)
-//         {
-//             var m = $('#meter')[0];
-//             var w = m.width;
-//             var h = m.height;
-//             meter.clearRect(0, 0, w, h);
-//             if (qual >= 50)
-//             {
-//                 meter.fillStyle = "rgb(0,255,0)"; // green
-//             }
-//             else
-//             {
-//                 meter.fillStyle = "rgb(255,0,0)"; // red
-//             }
-//             meter.strokeStyle = "rgb(200,200,200)";
-//             meter.lineWidth = 0;
+        if (meter) {
+            var m = $('#meter')[0];
+            var w = m.width;
+            var h = m.height;
+            meter.clearRect(0, 0, w, h);
+            if (qual >= 50) {
+                meter.fillStyle = "rgb(0,255,0)"; // green
+            }
+            else {
+                meter.fillStyle = "rgb(255,0,0)"; // red
+            }
+            meter.strokeStyle = "rgb(200,200,200)";
+            meter.lineWidth = 0;
+            // draw main meter
+            meter.beginPath();
+            meter.moveTo(0, h);
+            meter.lineTo(w * qual / 100, h);
+            meter.lineTo(w * qual / 100, h - h * qual / 100);
+            meter.lineTo(0, h);
+            meter.closePath();
+            meter.fill();
+            meter.stroke();
+            meter.beginPath();
+            meter.moveTo(w / 4 + 0.5, h);
+            meter.lineTo(w / 4 + 0.5, h * 3 / 4);
+            if (qual >= 50) {
+                meter.moveTo(w / 2 + 0.5, h);
+                meter.lineTo(w / 2 + 0.5, h / 2);
+                if (qual >= 75) {
+                    meter.moveTo(w * 3 / 4 + 0.5, h);
+                    meter.lineTo(w * 3 / 4 + 0.5, h / 4);
+                }
+            }
 
-//             // draw main meter
-//             meter.beginPath();
-//             meter.moveTo(0,h);
-//             meter.lineTo(w*qual/100, h);
-//             meter.lineTo(w*qual/100, h-h*qual/100);
-//             meter.lineTo(0,h);
-//             meter.closePath();
-//             meter.fill();
-//             meter.stroke();
-//             meter.beginPath();
-//             meter.moveTo(w/4+0.5, h);
-//             meter.lineTo(w/4+0.5, h*3/4);
-//             if (qual >= 50)
-//             {
-//                 meter.moveTo(w/2+0.5, h);
-//                 meter.lineTo(w/2+0.5, h/2);
-//                 if (qual >= 75)
-//                 {
-//                     meter.moveTo(w*3/4+0.5, h);
-//                     meter.lineTo(w*3/4+0.5, h/4);
-//                 }
-//             }
+            meter.closePath();
+            meter.stroke();
 
-//             meter.closePath();
-//             meter.stroke();
+            var loss = (packets_lost / NUM_MOVING_AVERAGE) * 100;
 
-//             var loss = (packets_lost/NUM_MOVING_AVERAGE)*100;
+            var t1 = performance.now();
+            if ((!hovering) || (t1 - last_hover_time > 2000)) {
+                if (hovering) {
+                    last_hover_time = t1;
+                    console.log(last_hover_time);
+                }
 
-//             var t1 = performance.now();
-//             if ((!hovering) || (t1-last_hover_time > 2000))
-//             {
-//                 if (hovering)
-//                 {
-//                     last_hover_time = t1;
-//                     console.log(last_hover_time);
-//                 }
-
-//                 m.title = "Jitter: "+avg_jitter.toFixed(0)+"ms, ping: "+avg_ping.toFixed(0)+"ms, packet loss: "+loss.toFixed(0)+"%";
-//                 console.log(m);
-//                 console.log(m.title);
-//             }
-//         }
-//     }
-// }
+                m.title = "Jitter: " + avg_jitter.toFixed(0) + "ms, ping: " + avg_ping.toFixed(0) + "ms, packet loss: " + loss.toFixed(0) + "%";
+                console.log(m);
+                console.log(m.title);
+            }
+        }
+    }
+}
 
 function reply_exists(msg) {
     if (typeof (msg["exists"]) != 'undefined') {
@@ -430,13 +416,22 @@ function setup_ping()
     $('#start').removeAttr('disabled').html("Stop").unbind('click')
         .click(function () {
             if (null != ping_to) {
-                console.log('點擊取消：' + ping_to);
+                console.log('點擊取消' + ping_to);
                 clearInterval(ping_to);
                 ping_to = null;
 
             }
+            // 重置圖表
+            if (myChart && typeof myChart.reset === 'function') {
+                console.log('重置');
+                resetChart();
+                myChart.reset();
+             }
+            
             //$(this).attr('disabled', true);
             //janus.destroy();
+            //禁用點擊功能，並終止與 janus 的服務 
+
             $('#start').html("Start").unbind('click')
                 .click(function () {
                     $('#start').html("Start")
@@ -455,7 +450,7 @@ function start_ping() {
     last_ping_time = 0;
     ping_times = {};
     ping_to = setInterval(send_ping, ping_interval);
-    console.log('開始計時');
+    console.log('開始計時' + ping_to);
 }
 
 function send_ping() {

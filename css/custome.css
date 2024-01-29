@@ -16,7 +16,7 @@ body {
   /*  挑個顏色吧 https://coolors.co/palettes/trending */
 }
 
-.btn {
+.btnGreen {
   color: #fffffff2;
   margin: 1px;
   padding: 10px 30px;
@@ -24,14 +24,14 @@ body {
   background-color: #27ae60;
   border: none;
   border-radius: 5px;
-  /* box-shadow: 0 9px #95a5a6; */
+  box-shadow: 0 9px #95a5a6;
 }
 
-.btn:hover {
+.btnGreen:hover {
   background-color: #2ecc71;
 }
 
-.btn:active {
+.btnGreen:active {
   background-color: #2ecc71;
   transform: translateY(4px);
 }
