@@ -1,4 +1,5 @@
-// Just learning how to add motion graphic base on it
+// Just learning how to add motion graphic base on original project
+// https://www.groupworld.net/pingtest.html
 
 Chart.defaults.font.size = 10;
 Chart.defaults.elements.line.borderWidth = 2;
@@ -14,8 +15,8 @@ const TICKS = true;
 
 // 樣式定義區塊
 
-const backgroundColor = ['#45f4f7'];
-const borderColor = ['#00bfaf'];
+const backgroundColor = ['#177245'];
+const borderColor = ['#177245'];
 
 
 
@@ -54,7 +55,7 @@ const data = {
         label: '平均延遲時間',
         backgroundColor: backgroundColor,
         borderColor: borderColor,
-        borderWidth: 5,
+        borderWidth: 3,
         data: dataValue,
     }
     ]
@@ -182,11 +183,11 @@ function addData(myChart, label, newData, maxPoints) {
 
 }
 
-document.getElementById('addDataButton').addEventListener('click', function () {
-    const currentSeconds = getCurrentSeconds(); // 從 time.js 獲取秒數
-    addData(myChart, currentSeconds, getRandomValue());
+// document.getElementById('addDataButton').addEventListener('click', function () {
+//     const currentSeconds = getCurrentSeconds(); // 從 time.js 獲取秒數
+//     addData(myChart, currentSeconds, getRandomValue());
 
-});
+// });
 
 
 //刪除資料
@@ -199,10 +200,10 @@ function popData(myChart) {
     myChart.update();
 }
 
-document.getElementById('popDataButton').addEventListener('click', function () {
-    popData(myChart);
+// document.getElementById('popDataButton').addEventListener('click', function () {
+//     popData(myChart);
 
-});
+// });
 
 
 //首項增加預設資料
