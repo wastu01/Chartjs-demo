@@ -24,13 +24,13 @@ const dayNamesZh = [ '星期日', '星期一', '星期二', '星期三', '星期
 
 const timeInMs1 = +new Date()
 
-//console.log(timeInMs1); //某個特殊時間
+//console.log(timeInMs1);
 
 
 function getCurrentSeconds() {
     const dateObject = new Date();
     return dateObject.getSeconds().toString();
-    console.log(dateObject.getSeconds());
+    //console.log(dateObject.getSeconds());
   }
 
 
