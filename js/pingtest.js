@@ -63,7 +63,7 @@ var textroom = null;
 var hovering = false;
 var last_hover_time = 0;
 var ping_to = null;
-var ping_interval = 1300; //打 Ping 頻率
+var ping_interval = 2000; //打 Ping 頻率
 var pings_sent = 0;
 var pings_received = 0;
 var opaqueId = "pingtest-" + Janus.randomString(12); // 亂數生成 text
@@ -108,8 +108,7 @@ function start_janus() {
     // Initialize the library (all console debuggers enabled)
     Janus.init({
         debug: ["debug"], callback: function () {
-            // debug: "all"，console 可看到 Janus.log 輸出所有訊息
-            // Use a button to start the demo
+            // debug: "all"，瀏覽器 console 可看到 Janus.log 輸出所有訊息
             $('#start').one('click', function () {
                 start_pings();
                 //後續可開發項目
@@ -434,7 +433,8 @@ function setup_ping()
             $('#start').html("Start").unbind('click')
                 .click(function () {
                     $('#start').html("Start")
-                    console.log('點擊開始：' + ping_to);
+                    // resetChart();
+                    console.log('重置圖表，重新開始：');
                     setup_ping();
                     start_ping();
                 });
