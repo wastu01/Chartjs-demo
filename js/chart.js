@@ -1,29 +1,30 @@
 // Just learning how to add motion graphic base on original project
 // https://www.groupworld.net/pingtest.html
 
-Chart.defaults.font.size = 10;
+Chart.defaults.font.size = 9;
 Chart.defaults.elements.line.borderWidth = 2;
 
 
-// grid configuration
+// 樣式定義區塊
 
 const DISPLAY = true;
 const BORDER = true;
 const CHART_AREA = true;
 const TICKS = true;
 
-
-// 樣式定義區塊
-
 const backgroundColor = ['#177245'];
 const borderColor = ['#177245'];
 
 
 
-// 資料定義區塊 (labels,dataValue) = (x,y)
+// 資料定義區塊 
+
+// X軸允許出現的最大數量
+const maxPoints = 10;
+
+// (labels,dataValue) = (x,y)
 const labels = ['尚未啟動', '尚未啟動', '尚未啟動', '尚未啟動', '尚未啟動', '尚未啟動'];
 const dataValue = [0, 0, 0, 0, 0, 0];
-
 
 console.log('初始末端資料：' + labels.slice(labels.length - 1));
 
@@ -32,6 +33,7 @@ const dataValue2 = [0, 0, 0, 0, 0, 0];
 const defaultValue = 1;
 
 dataValue2.fill(defaultValue);
+
 
 // 可新增最新一筆的延遲時間 (未開發)
 // 目前設置為固定值(defaultValue)
@@ -148,8 +150,8 @@ function resetChart() {
 
 function updateChart(label, avgPingTime, lastPingTime) {
 
-    addData(myChart, label, avgPingTime, 30);
-    console.log(lastPingTime);
+    addData(myChart, label, avgPingTime, 10);
+    console.log('最新一筆延遲時間' + lastPingTime);
 }
 
 //資料更新區塊
